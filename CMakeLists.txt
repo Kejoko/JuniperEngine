@@ -31,15 +31,9 @@ add_subdirectory(juniper/deps/glfw)
 list(APPEND DEP_LIBS glfw)
 
 #======================================================================
-# GLAD
+# Vulkan
 #======================================================================
-set(GLAD_DIR "${DEPS_DIR}/glad")
 
-include_directories(${GLAD_DIR}/include)
-
-add_library("glad" "${GLAD_DIR}/src/glad.c")
-
-list(APPEND DEP_LIBS glad)
 
 #======================================================================
 # Juniper source code

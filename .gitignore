@@ -6,6 +6,10 @@
 # MacOS directory thingy
 .DS_Store
 
+# ========================================
+# vulkansdk directory
+# ========================================
+Vulkansdk-macos
 
 # ========================================
 # CMake files
