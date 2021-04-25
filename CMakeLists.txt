@@ -23,16 +23,34 @@ set(VEND_DIR "${PROJECT_SOURCE_DIR}/juniper/vendor")
 # GLFW
 #======================================================================
 set(GLFW_DIR "${VEND_DIR}/glfw")
-set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-include_directories(${GLFW_DIR}/include)
+set(INCL_GLFW_STR "Including GLFW headers from:")
 
-add_subdirectory(${GLFW_DIR})
-
-list(APPEND VEND_LIBS glfw)
+if(WIN32)
+    message(STATUS "Using precompiled GLFW binaries")
+    find_library(Glfw_LIBRARY
+             NAMES glfw3
+             PATHS ${GLFW_DIR}/windows/lib)
+    if(Glfw_LIBRARY)
+        set(Glfw_FOUND ON)
+        message(STATUS "Found precompiled GLFW libraries: ${Glfw_LIBRARY}")
+        message(STATUS "${INCL_GLFW_STR} ${GLFW_DIR}/windows/include")
+        include_directories(${GLFW_DIR}/windows/include)
+        list(APPEND VEND_LIBS ${Glfw_LIBRARY})
+    else()
+        message(FATAL_ERROR "Failed to find GLFW binaries")
+    endif()
+else()
+    message(STATUS "Building vendored GLFW from source")
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    add_subdirectory(${GLFW_DIR})
+    message(STATUS "${INCL_GLFW_STR} ${GLFW_DIR}/include")
+    include_directories(${GLFW_DIR}/include)
+    list(APPEND VEND_LIBS glfw)
+endif()
 
 #======================================================================
 # Vulkan
