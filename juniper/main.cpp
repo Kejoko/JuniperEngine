@@ -6,9 +6,13 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "spdlog/spdlog.h"
+
 #include <iostream>
 
 int main() {
+    spdlog::info("Spdlog is working!");
+
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

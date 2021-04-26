@@ -140,6 +140,19 @@ set(GLM_DIR "${VEND_DIR}/glm")
 include_directories(${VEND_DIR}/glm)
 
 #======================================================================
+# Spdlog
+#======================================================================
+set(SPDLOG_DIR "${VEND_DIR}/spdlog")
+
+message(STATUS "Building vendored Spdlog from source")
+add_subdirectory(${SPDLOG_DIR})
+
+message(STATUS "Including Spdlog headers from: ${SPDLOG_DIR}/include")
+include_directories(${SPDLOG_DIR}/include)
+
+list(APPEND VEND_LIBS spdlog)
+
+#======================================================================
 # Juniper source code
 #======================================================================
 
