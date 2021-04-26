@@ -7,9 +7,9 @@
 .DS_Store
 
 # ========================================
-# vulkansdk directory
+# Visual Studio Code
 # ========================================
-Vulkansdk-macos
+.vscode
 
 # ========================================
 # CMake files
