@@ -50,6 +50,9 @@ void jun::Logger::init() {
 
 void jun::Logger::assertInitialized() {
     if (!initialized) {
+        #if defined(BUILD_DEBUG) || defined(BUILD_TEST)
+        std::cerr << "jun::Logger not initialized\n";
+        #endif
         throw std::runtime_error("jun::Logger not initialized");
     }
 }
