@@ -17,6 +17,7 @@ if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/juniper/src")
 set(VEND_DIR "${PROJECT_SOURCE_DIR}/juniper/vendor")
 
 #======================================================================
@@ -155,6 +156,13 @@ list(APPEND VEND_LIBS spdlog)
 #======================================================================
 # Juniper source code
 #======================================================================
+include_directories(${SRC_DIR})
+
+add_library(jun_Logger
+            STATIC
+            ${SRC_DIR}/logger/Logger.cpp
+            ${SRC_DIR}/logger/Logger.h)
+list(APPEND JUN_LIBS jun_Logger)
 
 #======================================================================
 # Juniper Entry Point
@@ -164,4 +172,5 @@ add_executable(${PROJECT_NAME} juniper/main.cpp)
 target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE
+  ${JUN_LIBS}
   ${VEND_LIBS})
