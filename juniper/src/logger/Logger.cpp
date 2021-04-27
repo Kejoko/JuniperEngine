@@ -17,6 +17,8 @@ bool jun::Logger::initialized = false;
 std::shared_ptr<spdlog::async_logger> jun::Logger::logger = nullptr;
 
 void jun::Logger::init() {
+    if (initialized) return;
+    
     spdlog::init_thread_pool(8192, 1);
 
     spdlog::sink_ptr stdoutSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
