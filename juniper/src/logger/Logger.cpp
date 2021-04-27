@@ -6,6 +6,8 @@
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -24,7 +26,11 @@ void jun::Logger::init() {
     spdlog::sink_ptr stdoutSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     stdoutSink->set_level(spdlog::level::trace);
 
-    std::string dateString = "DATE";
+    time_t time = std::time(nullptr);
+    struct tm* currtime = std::localtime(&time);
+    std::ostringstream oss;
+    oss << std::put_time(currtime, "%Y.%m.%d.%H.%M");
+    std::string dateString = oss.str();
     std::string fileName = "junlog." + dateString + ".log";
     spdlog::sink_ptr fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(fileName, true);
     fileSink->set_level(spdlog::level::warn);
