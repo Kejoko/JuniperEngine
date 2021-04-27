@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+#include "Core.h"
+
 #include "spdlog/async.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -25,7 +27,14 @@ jun::Logger::Logger() {
     sinks.push_back(fileSink);
 
     logger = std::make_shared<spdlog::async_logger>("master logger", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+    #if defined(BUILD_DEBUG)
     logger->set_level(spdlog::level::trace);
+    #elif defined(BUILD_TEST)
+    logger->set_level(spdlog::level::info);
+    #elif defined(BUILD_RELEASE)
+    logger->set_level(spdlog::level::err);
+    #endif
+
     spdlog::register_logger(logger);
 
     spdlog::set_pattern("[%T:%e] [%^%=10l%$] %v");
