@@ -1,6 +1,9 @@
 // A singleton asynch logger using spdlog
 
-#include <spdlog/spdlog.h>
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h"
+
+#include <memory>
 
 namespace jun {
     class Logger;
@@ -10,11 +13,17 @@ class jun::Logger {
     public:
         static Logger& getInstance();
 
-        void log();
+        void logTrace(std::string message);
+        void logDebug(std::string message);
+        void logInfo(std::string message);
+        void logWarn(std::string message);
+        void logError(std::string message);
+        void logCritical(std::string message);
 
         Logger(const Logger&) = delete;
         Logger& operator=(const Logger&) = delete;
     private:
         Logger();
-        int val;
+
+        std::shared_ptr<spdlog::async_logger> logger;
 };

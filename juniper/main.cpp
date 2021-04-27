@@ -12,7 +12,12 @@
 
 int main() {
     jun::Logger& logger = jun::Logger::getInstance();
-    logger.log();
+    logger.logTrace("trace log boi");
+    logger.logDebug("debug boiii");
+    logger.logInfo("info mannn");
+    logger.logWarn("warn homie");
+    logger.logError("error gustaf");
+    logger.logCritical("critical samuel!");
 
     glfwInit();
 
