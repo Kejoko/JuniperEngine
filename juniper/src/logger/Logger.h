@@ -14,19 +14,20 @@ namespace jun {
 // A singleton asynch logger using spdlog
 class jun::Logger {
     public:
-        static Logger& getInstance();
+        static void init();
 
-        void logTrace(std::string message);
-        void logDebug(std::string message);
-        void logInfo(std::string message);
-        void logWarn(std::string message);
-        void logError(std::string message);
-        void logCritical(std::string message);
+        static void trace(std::string message);
+        static void debug(std::string message);
+        static void info(std::string message);
+        static void warn(std::string message);
+        static void error(std::string message);
+        static void critical(std::string message);
 
-        Logger(const Logger&) = delete;
-        Logger& operator=(const Logger&) = delete;
+        Logger() = delete;
+
     private:
-        Logger();
+        static void assertInitialized();
 
-        std::shared_ptr<spdlog::async_logger> logger;
+        static bool initialized;
+        static std::shared_ptr<spdlog::async_logger> logger;
 };

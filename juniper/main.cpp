@@ -11,13 +11,13 @@
 #include <iostream>
 
 int main() {
-    jun::Logger& logger = jun::Logger::getInstance();
-    logger.logTrace("trace log boi");
-    logger.logDebug("debug boiii");
-    logger.logInfo("info mannn");
-    logger.logWarn("warn homie");
-    logger.logError("error gustaf");
-    logger.logCritical("critical samuel!");
+    jun::Logger::init();
+    jun::Logger::trace("trace log boi");
+    jun::Logger::debug("debug boiii");
+    jun::Logger::info("info mannn");
+    jun::Logger::warn("warn homie");
+    jun::Logger::error("error gustaf");
+    jun::Logger::critical("critical samuel!");
 
     glfwInit();
 

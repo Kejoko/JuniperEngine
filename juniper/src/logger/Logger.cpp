@@ -8,10 +8,15 @@
 
 #include <iostream>
 #include <memory>
+#include <stdexcept>
+#include <sstream>
 #include <string>
 #include <vector>
 
-jun::Logger::Logger() {
+bool jun::Logger::initialized = false;
+std::shared_ptr<spdlog::async_logger> jun::Logger::logger = nullptr;
+
+void jun::Logger::init() {
     spdlog::init_thread_pool(8192, 1);
 
     spdlog::sink_ptr stdoutSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -38,33 +43,43 @@ jun::Logger::Logger() {
     spdlog::register_logger(logger);
 
     spdlog::set_pattern("[%T:%e] [%^%=10l%$] %v");
+
+    initialized = true;
+    logger->info("Logger initialized");
 }
 
-jun::Logger& jun::Logger::getInstance() {
-    static Logger instance;
-    return instance;
+void jun::Logger::assertInitialized() {
+    if (!initialized) {
+        throw std::runtime_error("jun::Logger not initialized");
+    }
 }
 
-void jun::Logger::logTrace(std::string message) {
+void jun::Logger::trace(std::string message) {
+    assertInitialized();
     logger->trace(message);
 }
 
-void jun::Logger::logDebug(std::string message) {
+void jun::Logger::debug(std::string message) {
+    assertInitialized();
     logger->debug(message);
 }
 
-void jun::Logger::logInfo(std::string message) {
+void jun::Logger::info(std::string message) {
+    assertInitialized();
     logger->info(message);
 }
 
-void jun::Logger::logWarn(std::string message) {
+void jun::Logger::warn(std::string message) {
+    assertInitialized();
     logger->warn(message);
 }
 
-void jun::Logger::logError(std::string message) {
+void jun::Logger::error(std::string message) {
+    assertInitialized();
     logger->error(message);
 }
 
-void jun::Logger::logCritical(std::string message) {
+void jun::Logger::critical(std::string message) {
+    assertInitialized();
     logger->critical(message);
 }
