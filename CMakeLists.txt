@@ -2,6 +2,9 @@
 # JuniperEngine
 #======================================================================
 cmake_minimum_required(VERSION 3.11)
+set(CMAKE_CONFIGURATION_TYPES
+    Debug Test Release
+    CACHE STRING "" FORCE)
 project(JuniperEngine VERSION 0.1 LANGUAGES C CXX)
 
 #======================================================================
@@ -13,10 +16,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #======================================================================
 # Housekeeping
 #======================================================================
+if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "No build type specified. Defaulting to Debug")
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Building in Debug mode. Suppressing no messages")
+    add_compile_definitions(BUILD_DEBUG)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Test")
+    message(STATUS "Building in Test mode. Suppressing debug messages")
+    add_compile_definitions(BUILD_TEST)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Building in Release mode. Suppressing non-error messages")
+    add_compile_definitions(BUILD_RELEASE)
+else()
+    message(FATAL_ERROR "Unkown build type specified: ${CMAKE_BUILD_TYPE}")
+endif()
+
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/juniper/src")
 set(VEND_DIR "${PROJECT_SOURCE_DIR}/juniper/vendor")
 
 #======================================================================
@@ -155,6 +177,13 @@ list(APPEND VEND_LIBS spdlog)
 #======================================================================
 # Juniper source code
 #======================================================================
+include_directories(${SRC_DIR})
+
+add_library(jun_Logger
+            STATIC
+            ${SRC_DIR}/logger/Logger.cpp
+            ${SRC_DIR}/logger/Logger.h)
+list(APPEND JUN_LIBS jun_Logger)
 
 #======================================================================
 # Juniper Entry Point
@@ -164,4 +193,5 @@ add_executable(${PROJECT_NAME} juniper/main.cpp)
 target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE
+  ${JUN_LIBS}
   ${VEND_LIBS})

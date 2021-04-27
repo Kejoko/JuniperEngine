@@ -6,12 +6,18 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
-#include "spdlog/spdlog.h"
+#include "logger/Logger.h"
 
 #include <iostream>
 
 int main() {
-    spdlog::info("Spdlog is working!");
+    jun::Logger::init();
+    jun::Logger::trace("trace log boi");
+    jun::Logger::debug("debug boiii");
+    jun::Logger::info("info mannn");
+    jun::Logger::warn("warn homie");
+    jun::Logger::error("error gustaf");
+    jun::Logger::critical("critical samuel!");
 
     glfwInit();
 
