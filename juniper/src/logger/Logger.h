@@ -1,5 +1,3 @@
-// A singleton asynch logger using spdlog
-
 #include "spdlog/spdlog.h"
 #include "spdlog/async.h"
 
@@ -9,6 +7,7 @@ namespace jun {
     class Logger;
 }
 
+// A singleton asynch logger using spdlog
 class jun::Logger {
     public:
         static Logger& getInstance();

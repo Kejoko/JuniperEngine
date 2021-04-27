@@ -27,6 +27,8 @@ jun::Logger::Logger() {
     logger = std::make_shared<spdlog::async_logger>("master logger", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
     logger->set_level(spdlog::level::trace);
     spdlog::register_logger(logger);
+
+    spdlog::set_pattern("[%T:%e] [%^%=10l%$] %v");
 }
 
 jun::Logger& jun::Logger::getInstance() {
