@@ -29,7 +29,7 @@ void jun::Logger::init() {
     time_t time = std::time(nullptr);
     struct tm* currtime = std::localtime(&time);
     std::ostringstream oss;
-    oss << std::put_time(currtime, "%Y.%m.%d.%H.%M");
+    oss << std::put_time(currtime, "%Y.%m.%d.%H.%M.%S");
     std::string dateString = oss.str();
     std::string fileName = "junlog." + dateString + ".log";
     spdlog::sink_ptr fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(fileName, true);
@@ -53,7 +53,7 @@ void jun::Logger::init() {
     spdlog::set_pattern("[%T:%e] [%^%=10l%$] %v");
 
     initialized = true;
-    logger->info("Logger initialized");
+    logger->info("Logger initialized. Writing to logfile: " + fileName);
 }
 
 void jun::Logger::assertInitialized() {
