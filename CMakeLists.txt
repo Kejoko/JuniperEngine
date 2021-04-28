@@ -41,6 +41,8 @@ endif()
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/juniper/src")
 set(VEND_DIR "${PROJECT_SOURCE_DIR}/juniper/vendor")
 
+include_directories(${SRC_DIR})
+
 #======================================================================
 # GLFW
 #======================================================================
@@ -175,23 +177,36 @@ include_directories(${SPDLOG_DIR}/include)
 list(APPEND VEND_LIBS spdlog)
 
 #======================================================================
-# Juniper source code
+# Juniper utility source code
 #======================================================================
-include_directories(${SRC_DIR})
-
 add_library(jun_Logger
             STATIC
             ${SRC_DIR}/logger/Logger.cpp
             ${SRC_DIR}/logger/Logger.h)
-list(APPEND JUN_LIBS jun_Logger)
+list(APPEND JUN_UTIL_LIBS jun_Logger)
+
+#======================================================================
+# Juniper base source code
+#======================================================================
+# add_library(jun_window
+#             STATIC)
+# list(APPEND JUN_BASE_LIBS jun_window)
+
+add_library(jun_base
+            STATIC
+            ${SRC_DIR}/base/JuniperBase.cpp
+            ${SRC_DIR}/base/JuniperWindow.cpp
+            ${SRC_DIR}/base/JuniperBase.h
+            ${SRC_DIR}/base/JuniperWindow.h)
+list(APPEND JUN_BASE_LIBS jun_base)
 
 #======================================================================
 # Juniper Entry Point
 #======================================================================
 add_executable(${PROJECT_NAME} juniper/main.cpp)
 
-target_link_libraries(
-  ${PROJECT_NAME}
-  PRIVATE
-  ${JUN_LIBS}
-  ${VEND_LIBS})
+target_link_libraries(${PROJECT_NAME}
+                      PRIVATE
+                      ${JUN_UTIL_LIBS}
+                      ${JUN_BASE_LIBS}
+                      ${VEND_LIBS})
