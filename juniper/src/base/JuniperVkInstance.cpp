@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "AppInfo.h"
 
+#include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -13,6 +14,14 @@ void jun::JuniperVkInstance::init(const AppInfo& info) {
     mMinorVersion = info.mMinorVersion;
     mPatchVersion = info.mPatchVersion;
     mName = info.mName;
+
+    #if defined(BUILD_DEBUG)
+    mValidationLayers.push_back("VK_LAYER_KHRONOS_validation");
+    mEnableValidationLayers = true;
+    #else
+    mEnableValidationLayers = false;
+    #endif
+
     createInstance();
     jun::Logger::trace("JuniperVKInstance initialized");
 }
@@ -25,6 +34,13 @@ void jun::JuniperVkInstance::cleanup() {
 
 void jun::JuniperVkInstance::createInstance() {
     jun::Logger::trace("Creating Vulkan instance");
+    
+    // Check for the required validation layers
+    if (mEnableValidationLayers) {
+        verifyValidationLayerSupport();
+    }
+
+    // Tell the driver the information about our app
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = mName.c_str();
@@ -33,7 +49,7 @@ void jun::JuniperVkInstance::createInstance() {
     appInfo.engineVersion = VK_MAKE_VERSION(JUN_MAJOR_VERSION, JUN_MINOR_VERSION, JUN_PATCH_VERSION);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    // Determine which extensions glfw requires
+    // Determine which extensions glfw requires and list them
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -46,7 +62,7 @@ void jun::JuniperVkInstance::createInstance() {
     requiredExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     #endif
 
-    // Determine which extensions are available
+    // Determine which extensions are available and list them
     uint32_t extensionCount = 0;
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
     if (extensionCount == 0) {
@@ -71,11 +87,55 @@ void jun::JuniperVkInstance::createInstance() {
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
-    createInfo.enabledLayerCount = 0;
+    if (mEnableValidationLayers) {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(mValidationLayers.size());
+        createInfo.ppEnabledLayerNames = mValidationLayers.data();
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
 
     // Actually try to create the instance
     if (vkCreateInstance(&createInfo, nullptr, &mInstance) != VK_SUCCESS) {
         jun::Logger::critical("Failed to create Vulkan instance.");
         throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+}
+
+void jun::JuniperVkInstance::verifyValidationLayerSupport() {
+    jun::Logger::trace("Verifying validation layer support");
+
+    // List the desired validation layers
+    jun::Logger::info("Requested validation layers:");
+    for (const char* layerName : mValidationLayers) {
+        jun::Logger::info(std::string("\t") + std::string(layerName));
+    }
+
+    // Get all of the available validation layers and list them
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    jun::Logger::info("Available validation layers:");
+    for (VkLayerProperties layerProperties : availableLayers) {
+        jun::Logger::info(std::string("\t") + std::string(layerProperties.layerName));
+    }
+
+    // Ensure all of the desired layers are available
+    for (const char* layerName : mValidationLayers) {
+        bool layerFound = false;
+
+        for (const auto& layerProperties : availableLayers) {
+            if (strcmp(layerName, layerProperties.layerName) == 0) {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if (!layerFound) {
+            jun::Logger::critical("Requested validation layer is not available: " + std::string(layerName));
+            throw std::runtime_error("Requested validation layer is not available: " + std::string(layerName));
+        }
     }
 }

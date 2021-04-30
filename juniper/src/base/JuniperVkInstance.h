@@ -23,7 +23,11 @@ class jun::JuniperVkInstance {
         int mMinorVersion;
         int mPatchVersion;
         std::string mName;
+
+        bool mEnableValidationLayers;
+        std::vector<const char*> mValidationLayers;
         VkInstance mInstance;
 
         void createInstance();
+        void verifyValidationLayerSupport();
 };
