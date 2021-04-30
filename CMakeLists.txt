@@ -195,8 +195,10 @@ list(APPEND JUN_UTIL_LIBS jun_Logger)
 add_library(jun_base
             STATIC
             ${SRC_DIR}/base/JuniperBase.cpp
+            ${SRC_DIR}/base/JuniperVkInstance.cpp
             ${SRC_DIR}/base/JuniperWindow.cpp
             ${SRC_DIR}/base/JuniperBase.h
+            ${SRC_DIR}/base/JuniperVkInstance.h
             ${SRC_DIR}/base/JuniperWindow.h)
 list(APPEND JUN_BASE_LIBS jun_base)
 

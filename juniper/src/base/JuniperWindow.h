@@ -24,5 +24,5 @@ class jun::JuniperWindow {
         int mWidth;
         int mHeight;
         std::string mName;
-        GLFWwindow* mWindow;
+        GLFWwindow* mpWindow;
 };

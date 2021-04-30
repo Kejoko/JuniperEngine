@@ -7,7 +7,7 @@
 #include <string>
 
 int main() {
-    jun::JuniperBase base(800, 600, "Juniper Engine");
+    jun::JuniperBase base(0, 0, 1, 800, 600, "Juniper Engine");
 
     try {
         base.run();
