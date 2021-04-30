@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "AppInfo.h"
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
@@ -12,20 +13,19 @@ namespace jun {
 
 class jun::JuniperBase {
     public:
-        JuniperBase(int major, int minor, int patch, int width, int height, std::string name);
+        JuniperBase(const AppInfo& appInfo, int width, int height);
         ~JuniperBase();
 
         void run();
         void cleanup();
 
     private:
-        // Todo: make app info struct to hold version info and name
         const int mMajorVersion;
         const int mMinorVersion;
         const int mPatchVersion;
+        const std::string mName;
         int mWidth;
         int mHeight;
-        std::string mName;
         JuniperWindow mJWindow;
         JuniperVkInstance mJVkInstance;
 

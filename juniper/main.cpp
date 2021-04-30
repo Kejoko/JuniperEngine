@@ -1,3 +1,5 @@
+#include "base/Core.h"
+#include "base/AppInfo.h"
 #include "base/JuniperBase.h"
 #include "logger/Logger.h"
 
@@ -7,7 +9,12 @@
 #include <string>
 
 int main() {
-    jun::JuniperBase base(0, 0, 1, 800, 600, "Juniper Engine");
+    jun::AppInfo appInfo;
+    appInfo.mName = "Juniper Engine";
+    appInfo.mMajorVersion = 0;
+    appInfo.mMinorVersion = 0;
+    appInfo.mPatchVersion = 1;
+    jun::JuniperBase base(appInfo, 800, 600);
 
     try {
         base.run();

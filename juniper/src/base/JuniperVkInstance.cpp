@@ -1,17 +1,18 @@
 #include "JuniperVkInstance.h"
 
 #include "Core.h"
+#include "AppInfo.h"
 
 #include <stdexcept>
 #include <string>
 #include <vector>
 
-void jun::JuniperVkInstance::init(int major, int minor, int patch, std::string name) {
+void jun::JuniperVkInstance::init(const AppInfo& info) {
     jun::Logger::trace("Initializing JuniperVkInstance");
-    mMajorVersion = major;
-    mMinorVersion = major;
-    mPatchVersion = major;
-    mName = name;
+    mMajorVersion = info.mMajorVersion;
+    mMinorVersion = info.mMinorVersion;
+    mPatchVersion = info.mPatchVersion;
+    mName = info.mName;
     createInstance();
     jun::Logger::trace("JuniperVKInstance initialized");
 }
@@ -32,10 +33,39 @@ void jun::JuniperVkInstance::createInstance() {
     appInfo.engineVersion = VK_MAKE_VERSION(JUN_MAJOR_VERSION, JUN_MINOR_VERSION, JUN_PATCH_VERSION);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
+    // Determine which extensions glfw requires
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
+    std::vector<const char*> requiredExtensions;
+    for (size_t i = 0; i < glfwExtensionCount; i++) {
+        requiredExtensions.push_back(glfwExtensions[i]);
+    }
+    #if defined(BUILD_DEBUG)
+    requiredExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    #endif
+
+    // Determine which extensions are available
+    uint32_t extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    if (extensionCount == 0) {
+        jun::Logger::critical("No extensions available.");
+        throw std::runtime_error("No extensions available.");
+    }
+
+    std::vector<VkExtensionProperties> extensions(extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+    
+    jun::Logger::info("Available Vulkan extensions:");
+    for (const VkExtensionProperties& extension : extensions) {
+        jun::Logger::info(std::string("\t") + std::string(extension.extensionName));
+    }
+
+    // Ensure all of the required extensions are available
+    // Todo
+
+    // Tell the driver which global extensions and validation layers we would like to use
     VkInstanceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
@@ -43,17 +73,9 @@ void jun::JuniperVkInstance::createInstance() {
     createInfo.ppEnabledExtensionNames = glfwExtensions;
     createInfo.enabledLayerCount = 0;
 
+    // Actually try to create the instance
     if (vkCreateInstance(&createInfo, nullptr, &mInstance) != VK_SUCCESS) {
-        jun::Logger::critical("Failed to create vulkan instance.");
-        throw std::runtime_error("Failed to create vulkan instance.");
-    }
-
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-    std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-    jun::Logger::info("Available Vulkan extensions:");
-    for (const VkExtensionProperties& extension : extensions) {
-        jun::Logger::info(std::string("\t") + std::string(extension.extensionName));
+        jun::Logger::critical("Failed to create Vulkan instance.");
+        throw std::runtime_error("Failed to create Vulkan instance.");
     }
 }

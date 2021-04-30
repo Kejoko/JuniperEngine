@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "AppInfo.h"
 
 namespace jun {
     class JuniperVkInstance;
@@ -14,7 +15,7 @@ class jun::JuniperVkInstance {
         JuniperVkInstance(const JuniperVkInstance&) = delete;
         JuniperVkInstance& operator=(const JuniperVkInstance&) = delete;
 
-        void init(int major, int minor, int patch, std::string name);
+        void init(const AppInfo& info);
         void cleanup();
 
     private:

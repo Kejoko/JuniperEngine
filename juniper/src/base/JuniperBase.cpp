@@ -1,18 +1,19 @@
 #include "JuniperBase.h"
 
 #include "Core.h"
+#include "AppInfo.h"
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
 #include <string>
 
-jun::JuniperBase::JuniperBase(int major, int minor, int patch, int width, int height, std::string name) :
-                              mMajorVersion{major}, mMinorVersion{minor}, mPatchVersion{patch},
-                              mWidth{width}, mHeight{height}, mName{name} {
+jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
+                              mMajorVersion{info.mMajorVersion}, mMinorVersion{info.mMinorVersion}, mPatchVersion{info.mPatchVersion},
+                              mName{info.mName}, mWidth{width}, mHeight{height} {
     jun::Logger::init();
     jun::Logger::trace("Constructing JuniperBase");
     mJWindow.init(mWidth, mHeight, mName);
-    mJVkInstance.init(mMajorVersion, mMinorVersion, mPatchVersion, mName);
+    mJVkInstance.init(info);
     jun::Logger::trace("JuniperBase constructed");
 }
 
