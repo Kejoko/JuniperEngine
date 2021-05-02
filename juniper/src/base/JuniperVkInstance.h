@@ -9,13 +9,12 @@ namespace jun {
 
 class jun::JuniperVkInstance {
     public:
-        JuniperVkInstance() = default;
+        JuniperVkInstance(const AppInfo& info);
         ~JuniperVkInstance() = default;
 
         JuniperVkInstance(const JuniperVkInstance&) = delete;
         JuniperVkInstance& operator=(const JuniperVkInstance&) = delete;
 
-        void init(const AppInfo& info);
         void cleanup();
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(

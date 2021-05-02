@@ -8,14 +8,11 @@
 #include <string>
 #include <vector>
 
-void jun::JuniperVkInstance::init(const AppInfo& info) {
-    jun::Logger::trace("Initializing JuniperVkInstance");
-
-    mMajorVersion = info.mMajorVersion;
-    mMinorVersion = info.mMinorVersion;
-    mPatchVersion = info.mPatchVersion;
-    mName = info.mName;
-
+jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info) :
+                                          mMajorVersion{info.mMajorVersion},
+                                          mMinorVersion{info.mMinorVersion},
+                                          mPatchVersion{info.mPatchVersion},
+                                          mName{info.mName} {
     #if defined(BUILD_DEBUG)
     mValidationLayers.push_back("VK_LAYER_KHRONOS_validation");
     mEnableValidationLayers = true;
@@ -33,7 +30,6 @@ void jun::JuniperVkInstance::cleanup() {
     jun::Logger::trace("Cleaning up JuniperVkInstance");
 
     destroyDebugUtilsMessengerEXT(mDebugMessenger, nullptr);
-
     vkDestroyInstance(mInstance, nullptr);
     
     jun::Logger::trace("JuniperVkInstance cleaned up");
@@ -154,7 +150,7 @@ std::vector<const char*> jun::JuniperVkInstance::getRequiredExtensions() {
         extensions.push_back(glfwExtensions[i]);
     }
     
-    // If we are debugging ad the printing extension
+    // If we are debugging add the printing extension
     if (mEnableValidationLayers) {
         extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);

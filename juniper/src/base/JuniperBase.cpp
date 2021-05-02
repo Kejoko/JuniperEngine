@@ -9,12 +9,10 @@
 
 jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
                               mMajorVersion{info.mMajorVersion}, mMinorVersion{info.mMinorVersion}, mPatchVersion{info.mPatchVersion},
-                              mName{info.mName}, mWidth{width}, mHeight{height} {
-    jun::Logger::init();
-    jun::Logger::trace("Constructing JuniperBase");
-    mJWindow.init(mWidth, mHeight, mName);
-    mJVkInstance.init(info);
-    jun::Logger::trace("JuniperBase constructed");
+                              mName{info.mName}, mWidth{width}, mHeight{height},
+                              mJWindow{mWidth, mHeight, mName},
+                              mJVkInstance{info} {
+    jun::Logger::trace("JuniperBase initialized");
 }
 
 jun::JuniperBase::~JuniperBase() {

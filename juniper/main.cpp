@@ -9,6 +9,8 @@
 #include <string>
 
 int main() {
+    jun::Logger::init();
+
     jun::AppInfo appInfo;
     appInfo.mName = "Juniper Engine";
     appInfo.mMajorVersion = 0;

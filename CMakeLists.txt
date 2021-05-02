@@ -188,10 +188,6 @@ list(APPEND JUN_UTIL_LIBS jun_Logger)
 #======================================================================
 # Juniper base source code
 #======================================================================
-# add_library(jun_window
-#             STATIC)
-# list(APPEND JUN_BASE_LIBS jun_window)
-
 add_library(jun_base
             STATIC
             ${SRC_DIR}/base/JuniperBase.cpp

@@ -10,13 +10,12 @@ namespace jun {
 
 class jun::JuniperWindow {
     public:
-        JuniperWindow() = default;
+        JuniperWindow(int width, int height, const std::string& name);
         ~JuniperWindow() = default;
 
         JuniperWindow(const JuniperWindow&) = delete;
         JuniperWindow& operator=(const JuniperWindow&) = delete;
 
-        void init(int width, int height, std::string name);
         void cleanup();
 
         bool shouldClose();
