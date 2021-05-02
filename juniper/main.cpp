@@ -1,45 +1,33 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
-
+#include "base/Core.h"
+#include "base/AppInfo.h"
+#include "base/JuniperBase.h"
 #include "logger/Logger.h"
 
+#include <cstdlib>
 #include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
 
 int main() {
     jun::Logger::init();
-    jun::Logger::trace("trace log boi");
-    jun::Logger::debug("debug boiii");
-    jun::Logger::info("info mannn");
-    jun::Logger::warn("warn homie");
-    jun::Logger::error("error gustaf");
-    jun::Logger::critical("critical samuel!");
 
-    glfwInit();
+    jun::AppInfo appInfo;
+    appInfo.mName = "Juniper Engine";
+    appInfo.mMajorVersion = 0;
+    appInfo.mMinorVersion = 0;
+    appInfo.mPatchVersion = 1;
+    appInfo.mValidationLayers.push_back("VK_LAYER_KHRONOS_validation");
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
+    jun::JuniperBase base(appInfo, 800, 600);
 
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    std::cout << extensionCount << " extensions supported\n";
-
-    glm::mat4 matrix;
-    glm::vec4 vec;
-    auto test = matrix * vec;
-
-    while(!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+    try {
+        base.run();
+    } catch (const std::exception& e) {
+        std::string excMsg(e.what());
+        jun::Logger::critical("Exception raised running base in main:\n" + excMsg);
+        return EXIT_FAILURE;
     }
 
-    glfwDestroyWindow(window);
-
-    glfwTerminate();
-
-    return 0;
+    return EXIT_SUCCESS;
 }
