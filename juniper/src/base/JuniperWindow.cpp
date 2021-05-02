@@ -19,8 +19,6 @@ void jun::JuniperWindow::cleanup() {
 
     glfwDestroyWindow(mpWindow);
     glfwTerminate();
-    
-    jun::Logger::trace("JuniperWindow cleaned up");
 }
 
 bool jun::JuniperWindow::shouldClose() {

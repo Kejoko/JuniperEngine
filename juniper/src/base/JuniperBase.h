@@ -34,6 +34,7 @@ class jun::JuniperBase {
         JuniperWindow mJWindow;
         JuniperVkInstance mJVkInstance;
         JuniperDevice mJDevice;
+        
 
         void mainLoop();
 };

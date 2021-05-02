@@ -36,8 +36,6 @@ void jun::JuniperBase::cleanup() {
     mJDevice.cleanup();
     mJVkInstance.cleanup();
     mJWindow.cleanup();
-    
-    jun::Logger::trace("JuniperBase cleaned up");
 }
 
 void jun::JuniperBase::mainLoop() {

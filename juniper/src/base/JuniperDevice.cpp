@@ -13,12 +13,15 @@ jun::JuniperDevice::JuniperDevice(std::shared_ptr<VkInstance> pInstance) :
                                   mpInstance{pInstance},
                                   mPhysicalDevice{VK_NULL_HANDLE} {
     pickPhysicalDevice();
+    createLogicalDevice();
 
     jun::Logger::trace("JuniperDevice initialized");
 }
 
 void jun::JuniperDevice::cleanup() {
+    jun::Logger::trace("Cleaning up JuniperDevice");
 
+    vkDestroyDevice(mDevice, nullptr);
 }
 
 void jun::JuniperDevice::pickPhysicalDevice() {
@@ -116,6 +119,44 @@ jun::JuniperDevice::QueueFamilyIndices jun::JuniperDevice::findQueueFamilies(VkP
     }
 
     return indices;
+}
+
+void jun::JuniperDevice::createLogicalDevice() {
+    QueueFamilyIndices indices = findQueueFamilies(mPhysicalDevice);
+
+    // Describe the number of queues we want for a single queue family
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    float queuePriority = 1.0f;
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.mGraphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    // Specify which device features we want to use
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    // Specify information, extensions, and validation layers for driver
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.enabledExtensionCount = 0;
+
+    if (mEnableValidationLayers) {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(mValidationLayers.size());
+        createInfo.ppEnabledLayerNames = mValidationLayers.data();
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
+
+    // Create the device and get its device queue
+    if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mDevice) != VK_SUCCESS) {
+        jun::Logger::critical("Failed to create logical device");
+        throw std::runtime_error("Failed to create logical device");
+    }
+
+    vkGetDeviceQueue(mDevice, indices.mGraphicsFamily.value(), 0, &mGraphicsQueue);
 }
 
 bool jun::JuniperDevice::QueueFamilyIndices::isComplete() {

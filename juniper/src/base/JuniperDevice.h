@@ -19,12 +19,22 @@ class jun::JuniperDevice {
     private:
         std::shared_ptr<VkInstance> mpInstance;
         VkPhysicalDevice mPhysicalDevice;
+        VkDevice mDevice;
+        VkQueue mGraphicsQueue;
+
+        const std::vector<const char*> mValidationLayers = {"VK_LAYER_KHRONOS_validation"};
+        #if defined(BUILD_DEBUG)
+        const bool mEnableValidationLayers = true;
+        #else
+        const bool mEnableValidationLayers = false;
+        #endif
 
         struct QueueFamilyIndices;
 
         void pickPhysicalDevice();
         int rateDeviceSuitability(VkPhysicalDevice device);
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+        void createLogicalDevice();
 };
 
 struct jun::JuniperDevice::QueueFamilyIndices  {

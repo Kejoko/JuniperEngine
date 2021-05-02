@@ -25,8 +25,6 @@ void jun::JuniperVkInstance::cleanup() {
 
     destroyDebugUtilsMessengerEXT(mDebugMessenger, nullptr);
     vkDestroyInstance(*mpInstance, nullptr);
-    
-    jun::Logger::trace("JuniperVkInstance cleaned up");
 }
 
 void jun::JuniperVkInstance::createInstance() {
