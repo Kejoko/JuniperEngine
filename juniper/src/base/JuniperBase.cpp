@@ -18,7 +18,7 @@ jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
                               mpInstance{std::make_shared<VkInstance>()},
                               mJWindow{mWidth, mHeight, mName},
                               mJVkInstance{info, mpInstance},
-                              mJDevice{mpInstance} {
+                              mJDevice{info, mpInstance} {
     jun::Logger::trace("JuniperBase initialized");
 }
 

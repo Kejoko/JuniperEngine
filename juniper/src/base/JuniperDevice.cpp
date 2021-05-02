@@ -1,6 +1,7 @@
 #include "JuniperDevice.h"
 
 #include "Core.h"
+#include "AppInfo.h"
 
 #include <map>
 #include <memory>
@@ -9,7 +10,9 @@
 #include <string>
 #include <vector>
 
-jun::JuniperDevice::JuniperDevice(std::shared_ptr<VkInstance> pInstance) :
+jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance) :
+                                  mValidationLayers{info.mValidationLayers},
+                                  mEnableValidationLayers{info.mEnableValidationLayers},
                                   mpInstance{pInstance},
                                   mPhysicalDevice{VK_NULL_HANDLE} {
     pickPhysicalDevice();

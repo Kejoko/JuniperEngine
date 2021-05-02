@@ -27,21 +27,15 @@ class jun::JuniperVkInstance {
             void* pUserData);
 
     private:
-
         int mMajorVersion;
         int mMinorVersion;
         int mPatchVersion;
         std::string mName;
         
+        const std::vector<const char*> mValidationLayers;
+        const bool mEnableValidationLayers;
         std::shared_ptr<VkInstance> mpInstance;
         VkDebugUtilsMessengerEXT mDebugMessenger;
-
-        const std::vector<const char*> mValidationLayers = {"VK_LAYER_KHRONOS_validation"};
-        #if defined(BUILD_DEBUG)
-        const bool mEnableValidationLayers = true;
-        #else
-        const bool mEnableValidationLayers = false;
-        #endif
 
         void createInstance();
         void verifyValidationLayerSupport();

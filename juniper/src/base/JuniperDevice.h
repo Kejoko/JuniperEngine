@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "AppInfo.h"
 
 #include <memory>
 #include <optional>
@@ -11,23 +12,18 @@ namespace jun {
 
 class jun::JuniperDevice {
     public:
-        JuniperDevice(std::shared_ptr<VkInstance> pInstance);
+        JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance);
         ~JuniperDevice() = default;
 
         void cleanup();
 
     private:
+        const std::vector<const char*> mValidationLayers;
+        const bool mEnableValidationLayers;
         std::shared_ptr<VkInstance> mpInstance;
         VkPhysicalDevice mPhysicalDevice;
         VkDevice mDevice;
         VkQueue mGraphicsQueue;
-
-        const std::vector<const char*> mValidationLayers = {"VK_LAYER_KHRONOS_validation"};
-        #if defined(BUILD_DEBUG)
-        const bool mEnableValidationLayers = true;
-        #else
-        const bool mEnableValidationLayers = false;
-        #endif
 
         struct QueueFamilyIndices;
 

@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -16,6 +17,8 @@ int main() {
     appInfo.mMajorVersion = 0;
     appInfo.mMinorVersion = 0;
     appInfo.mPatchVersion = 1;
+    appInfo.mValidationLayers.push_back("VK_LAYER_KHRONOS_validation");
+
     jun::JuniperBase base(appInfo, 800, 600);
 
     try {

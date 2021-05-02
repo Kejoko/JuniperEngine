@@ -13,6 +13,8 @@ jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info, std::shared_ptr<V
                                           mMinorVersion{info.mMinorVersion},
                                           mPatchVersion{info.mPatchVersion},
                                           mName{info.mName},
+                                          mValidationLayers{info.mValidationLayers},
+                                          mEnableValidationLayers{info.mEnableValidationLayers},
                                           mpInstance{pInstance} {
     createInstance();
     setupDebugMessenger();
