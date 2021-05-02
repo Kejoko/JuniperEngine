@@ -3,13 +3,16 @@
 #include "Core.h"
 #include "AppInfo.h"
 
+#include <memory>
+#include <string>
+
 namespace jun {
     class JuniperVkInstance;
 }
 
 class jun::JuniperVkInstance {
     public:
-        JuniperVkInstance(const AppInfo& info);
+        JuniperVkInstance(const AppInfo& info, std::shared_ptr<VkInstance> pInstance);
         ~JuniperVkInstance() = default;
 
         JuniperVkInstance(const JuniperVkInstance&) = delete;
@@ -24,15 +27,19 @@ class jun::JuniperVkInstance {
             void* pUserData);
 
     private:
+        const std::vector<const char*> mValidationLayers = {"VK_LAYER_KHRONOS_validation"};
+        #if defined(BUILD_DEBUG)
+        const bool mEnableValidationLayers = true;
+        #else
+        const bool mEnableValidationLayers = false;
+        #endif
+
         int mMajorVersion;
         int mMinorVersion;
         int mPatchVersion;
         std::string mName;
-
-        bool mEnableValidationLayers;
-        std::vector<const char*> mValidationLayers;
-
-        VkInstance mInstance;
+        
+        std::shared_ptr<VkInstance> mpInstance;
         VkDebugUtilsMessengerEXT mDebugMessenger;
 
         void createInstance();
