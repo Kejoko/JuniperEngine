@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -142,13 +143,20 @@ jun::JuniperDevice::QueueFamilyIndices jun::JuniperDevice::findQueueFamilies(VkP
 void jun::JuniperDevice::createLogicalDevice() {
     QueueFamilyIndices indices = findQueueFamilies(mPhysicalDevice);
 
-    // Describe the number of queues we want for a single queue family
-    VkDeviceQueueCreateInfo queueCreateInfo{};
+    // Determine the unique queues we must create
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = {indices.mGraphicsFamily.value(), indices.mPresentFamily.value()};
+
+    // Create all of the unique queues
     float queuePriority = 1.0f;
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.mGraphicsFamily.value();
-    queueCreateInfo.queueCount = 1;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+    for (uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
 
     // Specify which device features we want to use
     VkPhysicalDeviceFeatures deviceFeatures{};
@@ -156,7 +164,8 @@ void jun::JuniperDevice::createLogicalDevice() {
     // Specify information, extensions, and validation layers for driver
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.queueCreateInfoCount = 1;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.enabledExtensionCount = 0;
@@ -175,6 +184,7 @@ void jun::JuniperDevice::createLogicalDevice() {
     }
 
     vkGetDeviceQueue(mDevice, indices.mGraphicsFamily.value(), 0, &mGraphicsQueue);
+    vkGetDeviceQueue(mDevice, indices.mPresentFamily.value(), 0, &mGraphicsQueue);
 }
 
 bool jun::JuniperDevice::QueueFamilyIndices::isComplete() {

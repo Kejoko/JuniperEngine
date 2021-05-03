@@ -25,6 +25,7 @@ class jun::JuniperDevice {
         VkPhysicalDevice mPhysicalDevice;
         VkDevice mDevice;
         VkQueue mGraphicsQueue;
+        VkQueue mPresentQueue;
 
         struct QueueFamilyIndices;
 
