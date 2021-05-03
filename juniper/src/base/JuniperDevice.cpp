@@ -195,7 +195,8 @@ void jun::JuniperDevice::createLogicalDevice() {
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.queueCreateInfoCount = 1;
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(mDeviceExtensions.size());
+    createInfo.ppEnabledExtensionNames = mDeviceExtensions.data();
 
     if (mEnableValidationLayers) {
         createInfo.enabledLayerCount = static_cast<uint32_t>(mValidationLayers.size());
