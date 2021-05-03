@@ -12,7 +12,7 @@ namespace jun {
 
 class jun::JuniperDevice {
     public:
-        JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance);
+        JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<VkSurfaceKHR> pSurface);
         ~JuniperDevice() = default;
 
         void cleanup();
@@ -21,6 +21,7 @@ class jun::JuniperDevice {
         const std::vector<const char*> mValidationLayers;
         const bool mEnableValidationLayers;
         std::shared_ptr<VkInstance> mpInstance;
+        std::shared_ptr<VkSurfaceKHR> mpSurface;
         VkPhysicalDevice mPhysicalDevice;
         VkDevice mDevice;
         VkQueue mGraphicsQueue;
@@ -35,6 +36,7 @@ class jun::JuniperDevice {
 
 struct jun::JuniperDevice::QueueFamilyIndices  {
     std::optional<uint32_t> mGraphicsFamily;
+    std::optional<uint32_t> mPresentFamily;
 
     bool isComplete();
 };

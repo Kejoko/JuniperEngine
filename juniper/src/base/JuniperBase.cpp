@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "AppInfo.h"
 #include "JuniperDevice.h"
+#include "JuniperSurface.h"
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
@@ -16,9 +17,12 @@ jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
                               mName{info.mName}, mWidth{width},
                               mHeight{height},
                               mpInstance{std::make_shared<VkInstance>()},
-                              mJWindow{mWidth, mHeight, mName},
+                              mppWindow{std::make_shared<GLFWwindow*>()},
+                              mpSurface{std::make_shared<VkSurfaceKHR>()},
+                              mJWindow{mWidth, mHeight, mName, mppWindow},
                               mJVkInstance{info, mpInstance},
-                              mJDevice{info, mpInstance} {
+                              mJSurface{mpInstance, mppWindow, mpSurface},
+                              mJDevice{info, mpInstance, mpSurface} {
     jun::Logger::trace("JuniperBase initialized");
 }
 
@@ -34,6 +38,7 @@ void jun::JuniperBase::cleanup() {
     jun::Logger::trace("Cleaning up JuniperBase");
 
     mJDevice.cleanup();
+    mJSurface.cleanup();
     mJVkInstance.cleanup();
     mJWindow.cleanup();
 }

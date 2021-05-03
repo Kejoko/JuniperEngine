@@ -4,12 +4,12 @@
 
 #include <string>
 
-jun::JuniperWindow::JuniperWindow(int width, int height, const std::string& name) :
-                                  mWidth{width}, mHeight{height}, mName{name} {
+jun::JuniperWindow::JuniperWindow(int width, int height, const std::string& name, std::shared_ptr<GLFWwindow*> ppWindow) :
+                                  mWidth{width}, mHeight{height}, mName{name}, mppWindow{ppWindow} {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    mpWindow = glfwCreateWindow(mWidth, mHeight, mName.c_str(), nullptr, nullptr);
+    *mppWindow = glfwCreateWindow(mWidth, mHeight, mName.c_str(), nullptr, nullptr);
     
     jun::Logger::trace("JuniperWindow initialized");
 }
@@ -17,10 +17,10 @@ jun::JuniperWindow::JuniperWindow(int width, int height, const std::string& name
 void jun::JuniperWindow::cleanup() {
     jun::Logger::trace("Cleaning up JuniperWindow");
 
-    glfwDestroyWindow(mpWindow);
+    glfwDestroyWindow(*mppWindow);
     glfwTerminate();
 }
 
 bool jun::JuniperWindow::shouldClose() {
-    return glfwWindowShouldClose(mpWindow);
+    return glfwWindowShouldClose(*mppWindow);
 }

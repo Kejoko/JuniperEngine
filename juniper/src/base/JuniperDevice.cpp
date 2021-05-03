@@ -10,10 +10,11 @@
 #include <string>
 #include <vector>
 
-jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance) :
+jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<VkSurfaceKHR> pSurface) :
                                   mValidationLayers{info.mValidationLayers},
                                   mEnableValidationLayers{info.mEnableValidationLayers},
                                   mpInstance{pInstance},
+                                  mpSurface{pSurface},
                                   mPhysicalDevice{VK_NULL_HANDLE} {
     pickPhysicalDevice();
     createLogicalDevice();
@@ -105,6 +106,9 @@ int jun::JuniperDevice::rateDeviceSuitability(VkPhysicalDevice device) {
     return score;
 }
 
+// Todo
+// Add logic to prefer a device which supports drawing and presentation in the same queue for performance benefits
+
 jun::JuniperDevice::QueueFamilyIndices jun::JuniperDevice::findQueueFamilies(VkPhysicalDevice device) {
     QueueFamilyIndices indices;
 
@@ -118,6 +122,17 @@ jun::JuniperDevice::QueueFamilyIndices jun::JuniperDevice::findQueueFamilies(VkP
     for (int i = 0; i < queueFamilies.size(); i++) {
         if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.mGraphicsFamily = i;
+        }
+
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *mpSurface, &presentSupport);
+
+        if (presentSupport) {
+            indices.mPresentFamily = i;
+        }
+
+        if (indices.isComplete()) {
+            break;
         }
     }
 
@@ -163,5 +178,5 @@ void jun::JuniperDevice::createLogicalDevice() {
 }
 
 bool jun::JuniperDevice::QueueFamilyIndices::isComplete() {
-    return mGraphicsFamily.has_value();
+    return mGraphicsFamily.has_value() && mPresentFamily.has_value();
 }

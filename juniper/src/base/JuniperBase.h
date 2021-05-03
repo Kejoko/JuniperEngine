@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "AppInfo.h"
 #include "JuniperDevice.h"
+#include "JuniperSurface.h"
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
@@ -31,8 +32,11 @@ class jun::JuniperBase {
         int mHeight;
 
         std::shared_ptr<VkInstance> mpInstance;
+        std::shared_ptr<GLFWwindow*> mppWindow;
+        std::shared_ptr<VkSurfaceKHR> mpSurface;
         JuniperWindow mJWindow;
         JuniperVkInstance mJVkInstance;
+        JuniperSurface mJSurface;
         JuniperDevice mJDevice;
 
         void mainLoop();
