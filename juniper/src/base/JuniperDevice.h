@@ -19,6 +19,7 @@ class jun::JuniperDevice {
 
     private:
         const std::vector<const char*> mValidationLayers;
+        const std::vector<const char*> mDeviceExtensions;
         const bool mEnableValidationLayers;
         std::shared_ptr<VkInstance> mpInstance;
         std::shared_ptr<VkSurfaceKHR> mpSurface;
@@ -31,6 +32,7 @@ class jun::JuniperDevice {
 
         void pickPhysicalDevice();
         int rateDeviceSuitability(VkPhysicalDevice device);
+        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
         void createLogicalDevice();
 };

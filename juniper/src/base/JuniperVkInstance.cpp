@@ -116,19 +116,19 @@ void jun::JuniperVkInstance::verifyValidationLayerSupport() {
     }
 
     // Ensure all of the desired layers are available
-    for (const char* layerName : mValidationLayers) {
+    for (const char* requiredLayer : mValidationLayers) {
         bool layerFound = false;
 
-        for (const auto& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
+        for (const auto& availableLayer : availableLayers) {
+            if (strcmp(requiredLayer, availableLayer.layerName) == 0) {
                 layerFound = true;
                 break;
             }
         }
 
         if (!layerFound) {
-            jun::Logger::critical("Requested validation layer is not available: " + std::string(layerName));
-            throw std::runtime_error("Requested validation layer is not available: " + std::string(layerName));
+            jun::Logger::critical("Requested validation layer is not available: " + std::string(requiredLayer));
+            throw std::runtime_error("Requested validation layer is not available: " + std::string(requiredLayer));
         }
     }
 }

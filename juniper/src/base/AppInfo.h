@@ -12,7 +12,8 @@ struct jun::AppInfo {
     int mMinorVersion;
     int mPatchVersion;
 
-    std::vector<const char*> mValidationLayers;
+    const std::vector<const char*> mValidationLayers = {"VK_LAYER_KHRONOS_validation"};
+    const std::vector<const char*> mDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     #if defined(BUILD_DEBUG)
     const bool mEnableValidationLayers = true;
     #else

@@ -13,6 +13,7 @@
 
 jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<VkSurfaceKHR> pSurface) :
                                   mValidationLayers{info.mValidationLayers},
+                                  mDeviceExtensions{info.mDeviceExtensions},
                                   mEnableValidationLayers{info.mEnableValidationLayers},
                                   mpInstance{pInstance},
                                   mpSurface{pSurface},
@@ -84,7 +85,7 @@ int jun::JuniperDevice::rateDeviceSuitability(VkPhysicalDevice device) {
     #endif
 
     // Ensure all of the required queue families are available for this device
-    if (!findQueueFamilies(device).isComplete()) {
+    if (!(findQueueFamilies(device).isComplete() && checkDeviceExtensionSupport(device))) {
         score = 0;
     }
 
@@ -105,6 +106,32 @@ int jun::JuniperDevice::rateDeviceSuitability(VkPhysicalDevice device) {
     jun::Logger::info("\t" + report);
 
     return score;
+}
+
+bool jun::JuniperDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
+    // Get all of the available device extensions
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    // Ensure that all of the required extensions are available
+    for (const char* requiredExtension : mDeviceExtensions) {
+        bool extensionSupported = false;
+
+        for (const auto& availableExtension : availableExtensions) {
+            if (strcmp(requiredExtension, availableExtension.extensionName) == 0) {
+                extensionSupported = true;
+                break;
+            }
+        }
+
+        if (!extensionSupported) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // Todo
