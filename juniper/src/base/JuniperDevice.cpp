@@ -13,14 +13,34 @@
 #include <string>
 #include <vector>
 
-jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface) :
+// jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface) :
+                                //   mValidationLayers{info.mValidationLayers},
+                                //   mDeviceExtensions{info.mDeviceExtensions},
+                                //   mEnableValidationLayers{info.mEnableValidationLayers},
+                                //   mpInstance{pInstance},
+                                //   mppWindow{ppWindow},
+                                //   mpSurface{pSurface},
+                                //   mPhysicalDevice{VK_NULL_HANDLE} {
+jun::JuniperDevice::JuniperDevice(const AppInfo& info,
+                                  std::shared_ptr<VkInstance> pInstance,
+                                  std::shared_ptr<GLFWwindow*> ppWindow,
+                                  std::shared_ptr<VkSurfaceKHR> pSurface,
+                                  std::shared_ptr<VkPhysicalDevice> pPhysicalDevice,
+                                  std::shared_ptr<VkDevice> pDevice,
+                                  std::shared_ptr<VkQueue> pGraphicsQueue,
+                                  std::shared_ptr<VkQueue> pPresentQueue) :
                                   mValidationLayers{info.mValidationLayers},
                                   mDeviceExtensions{info.mDeviceExtensions},
                                   mEnableValidationLayers{info.mEnableValidationLayers},
                                   mpInstance{pInstance},
                                   mppWindow{ppWindow},
                                   mpSurface{pSurface},
-                                  mPhysicalDevice{VK_NULL_HANDLE} {
+                                  mpPhysicalDevice{pPhysicalDevice},
+                                  mpDevice{pDevice},
+                                  mpGraphicsQueue{pGraphicsQueue},
+                                  mpPresentQueue{pPresentQueue} {
+    *mpPhysicalDevice = VK_NULL_HANDLE;
+
     pickPhysicalDevice();
     createLogicalDevice();
 
@@ -30,7 +50,8 @@ jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstanc
 void jun::JuniperDevice::cleanup() {
     jun::Logger::trace("Cleaning up JuniperDevice");
 
-    vkDestroyDevice(mDevice, nullptr);
+    // vkDestroyDevice(mDevice, nullptr);
+    vkDestroyDevice(*mpDevice, nullptr);
 }
 
 void jun::JuniperDevice::pickPhysicalDevice() {
@@ -56,7 +77,8 @@ void jun::JuniperDevice::pickPhysicalDevice() {
 
     // Ensure that the best candidate really is suitable
     if (candidates.rbegin()->first > 0) {
-        mPhysicalDevice = candidates.rbegin()->second;
+        // mPhysicalDevice = candidates.rbegin()->second;
+        *mpPhysicalDevice = candidates.rbegin()->second;
     } else {
         jun::Logger::critical("Failed to find a suitable GPU");
         throw std::runtime_error("Failed to find a suitable GPU");
@@ -89,14 +111,17 @@ int jun::JuniperDevice::rateDeviceSuitability(VkPhysicalDevice device) {
 
     // Ensure all of the required queue families are available for this device
     bool extensionsSupported = checkDeviceExtensionSupport(device);
-    if (!(findQueueFamilies(device).isComplete() && extensionsSupported)) {
+    QueueFamilyIndices indices;
+    indices.findQueueFamilies(device, *mpSurface);
+    if (!(indices.isComplete() && extensionsSupported)) {
         score = 0;
     }
 
     // Ensure that the available swap chain has all of the features that we need
     bool swapChainAdequate = false;
     if (extensionsSupported) {
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+        SwapChainSupportDetails swapChainSupport;
+        swapChainSupport.querySwapChainSupport(device, *mpSurface);
         swapChainAdequate = !swapChainSupport.mFormats.empty() && !swapChainSupport.mPresentModes.empty();
     }
     if (!swapChainAdequate) {
@@ -151,99 +176,9 @@ bool jun::JuniperDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 // Todo
 // Add logic to prefer a device which supports drawing and presentation in the same queue for performance benefits
 
-jun::JuniperDevice::QueueFamilyIndices jun::JuniperDevice::findQueueFamilies(VkPhysicalDevice device) {
-    QueueFamilyIndices indices;
-
-    // Get the available queue families
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-
-    // Ensure that at least one of these queue families VK_QUEUE_GRAPHICS_BIT
-    for (int i = 0; i < queueFamilies.size(); i++) {
-        if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.mGraphicsFamily = i;
-        }
-
-        VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *mpSurface, &presentSupport);
-
-        if (presentSupport) {
-            indices.mPresentFamily = i;
-        }
-
-        if (indices.isComplete()) {
-            break;
-        }
-    }
-
-    return indices;
-}
-
-jun::JuniperDevice::SwapChainSupportDetails jun::JuniperDevice::querySwapChainSupport(VkPhysicalDevice device) {
-        SwapChainSupportDetails details;
-
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, *mpSurface, &details.mCapabilities);
-
-        uint32_t formatCount;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, *mpSurface, &formatCount, nullptr);
-        if (formatCount != 0) {
-            details.mFormats.resize(formatCount);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, *mpSurface, &formatCount, details.mFormats.data());
-        }
-
-        uint32_t presentModeCount;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, *mpSurface, &presentModeCount, nullptr);
-        if (presentModeCount != 0) {
-            details.mPresentModes.resize(presentModeCount);
-            vkGetPhysicalDeviceSurfacePresentModesKHR(device, *mpSurface, &presentModeCount, details.mPresentModes.data());
-        }
-
-        return details;
-}
-
-VkSurfaceFormatKHR jun::JuniperDevice::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
-    for (const auto& availableFormat : availableFormats) {
-        if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-            return availableFormat;
-        }
-    }
-
-    return availableFormats[0];
-}
-
-VkPresentModeKHR jun::JuniperDevice::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
-    for (const auto& availablePresentMode : availablePresentModes) {
-        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            return availablePresentMode;
-        }
-    }
-
-    return VK_PRESENT_MODE_FIFO_KHR;
-}
-
-VkExtent2D jun::JuniperDevice::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
-    if (capabilities.currentExtent.width != UINT32_MAX) {
-        return capabilities.currentExtent;
-    } else {
-        int width, height;
-        glfwGetFramebufferSize(*mppWindow, &width, &height);
-
-        VkExtent2D actualExtent = {
-            static_cast<uint32_t>(width),
-            static_cast<uint32_t>(height)
-        };
-
-        actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
-        actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
-
-        return actualExtent;
-    }
-}
-
 void jun::JuniperDevice::createLogicalDevice() {
-    QueueFamilyIndices indices = findQueueFamilies(mPhysicalDevice);
+    QueueFamilyIndices indices;
+    indices.findQueueFamilies(*mpPhysicalDevice, *mpSurface);
 
     // Determine the unique queues we must create
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -281,15 +216,62 @@ void jun::JuniperDevice::createLogicalDevice() {
     }
 
     // Create the device and get its device queue
-    if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mDevice) != VK_SUCCESS) {
+    // if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mDevice) != VK_SUCCESS) {
+    if (vkCreateDevice(*mpPhysicalDevice, &createInfo, nullptr, mpDevice.get()) != VK_SUCCESS) {
         jun::Logger::critical("Failed to create logical device");
         throw std::runtime_error("Failed to create logical device");
     }
 
-    vkGetDeviceQueue(mDevice, indices.mGraphicsFamily.value(), 0, &mGraphicsQueue);
-    vkGetDeviceQueue(mDevice, indices.mPresentFamily.value(), 0, &mGraphicsQueue);
+    // vkGetDeviceQueue(mDevice, indices.mGraphicsFamily.value(), 0, &mGraphicsQueue);
+    // vkGetDeviceQueue(mDevice, indices.mPresentFamily.value(), 0, &mGraphicsQueue);
+    vkGetDeviceQueue(*mpDevice, indices.mGraphicsFamily.value(), 0, mpGraphicsQueue.get());
+    vkGetDeviceQueue(*mpDevice, indices.mPresentFamily.value(), 0, mpGraphicsQueue.get());
 }
 
-bool jun::JuniperDevice::QueueFamilyIndices::isComplete() {
+void jun::QueueFamilyIndices::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface) {
+    // Get the available queue families
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+    // Ensure that at least one of these queue families VK_QUEUE_GRAPHICS_BIT
+    for (int i = 0; i < queueFamilies.size(); i++) {
+        if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            mGraphicsFamily = i;
+        }
+
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
+        if (presentSupport) {
+            mPresentFamily = i;
+        }
+
+        if (isComplete()) {
+            break;
+        }
+    }
+}
+
+bool jun::QueueFamilyIndices::isComplete() {
     return mGraphicsFamily.has_value() && mPresentFamily.has_value();
+}
+
+void jun::SwapChainSupportDetails::querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &mCapabilities);
+
+        uint32_t formatCount;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+        if (formatCount != 0) {
+            mFormats.resize(formatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, mFormats.data());
+        }
+
+        uint32_t presentModeCount;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+        if (presentModeCount != 0) {
+            mPresentModes.resize(presentModeCount);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, mPresentModes.data());
+        }
 }
