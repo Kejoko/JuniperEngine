@@ -85,7 +85,18 @@ int jun::JuniperDevice::rateDeviceSuitability(VkPhysicalDevice device) {
     #endif
 
     // Ensure all of the required queue families are available for this device
-    if (!(findQueueFamilies(device).isComplete() && checkDeviceExtensionSupport(device))) {
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
+    if (!(findQueueFamilies(device).isComplete() && extensionsSupported)) {
+        score = 0;
+    }
+
+    // Ensure that the available swap chain has all of the features that we need
+    bool swapChainAdequate = false;
+    if (extensionsSupported) {
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+        swapChainAdequate = !swapChainSupport.mFormats.empty() && !swapChainSupport.mPresentModes.empty();
+    }
+    if (!swapChainAdequate) {
         score = 0;
     }
 
@@ -165,6 +176,28 @@ jun::JuniperDevice::QueueFamilyIndices jun::JuniperDevice::findQueueFamilies(VkP
     }
 
     return indices;
+}
+
+jun::JuniperDevice::SwapChainSupportDetails jun::JuniperDevice::querySwapChainSupport(VkPhysicalDevice device) {
+        SwapChainSupportDetails details;
+
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, *mpSurface, &details.mCapabilities);
+
+        uint32_t formatCount;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, *mpSurface, &formatCount, nullptr);
+        if (formatCount != 0) {
+            details.mFormats.resize(formatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, *mpSurface, &formatCount, details.mFormats.data());
+        }
+
+        uint32_t presentModeCount;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, *mpSurface, &presentModeCount, nullptr);
+        if (presentModeCount != 0) {
+            details.mPresentModes.resize(presentModeCount);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(device, *mpSurface, &presentModeCount, details.mPresentModes.data());
+        }
+
+        return details;
 }
 
 void jun::JuniperDevice::createLogicalDevice() {
