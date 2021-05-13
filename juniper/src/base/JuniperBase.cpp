@@ -22,7 +22,7 @@ jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
                               mJWindow{mWidth, mHeight, mName, mppWindow},
                               mJVkInstance{info, mpInstance},
                               mJSurface{mpInstance, mppWindow, mpSurface},
-                              mJDevice{info, mpInstance, mpSurface} {
+                              mJDevice{info, mpInstance, mppWindow, mpSurface} {
     jun::Logger::trace("JuniperBase initialized");
 }
 

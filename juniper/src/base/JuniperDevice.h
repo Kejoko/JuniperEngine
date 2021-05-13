@@ -12,7 +12,7 @@ namespace jun {
 
 class jun::JuniperDevice {
     public:
-        JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<VkSurfaceKHR> pSurface);
+        JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface);
         ~JuniperDevice() = default;
 
         void cleanup();
@@ -22,6 +22,7 @@ class jun::JuniperDevice {
         const std::vector<const char*> mDeviceExtensions;
         const bool mEnableValidationLayers;
         std::shared_ptr<VkInstance> mpInstance;
+        std::shared_ptr<GLFWwindow*> mppWindow;
         std::shared_ptr<VkSurfaceKHR> mpSurface;
         VkPhysicalDevice mPhysicalDevice;
         VkDevice mDevice;
@@ -36,6 +37,9 @@ class jun::JuniperDevice {
         bool checkDeviceExtensionSupport(VkPhysicalDevice device);
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
         SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
         void createLogicalDevice();
 };
 
