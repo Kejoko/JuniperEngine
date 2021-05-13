@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 
 #include <memory>
 #include <string>
@@ -12,7 +13,7 @@ namespace jun {
 
 class jun::JuniperVkInstance {
     public:
-        JuniperVkInstance(const AppInfo& info, std::shared_ptr<VkInstance> pInstance);
+        JuniperVkInstance(const AppInfo& info, const JuniperContext& context);
         ~JuniperVkInstance() = default;
 
         JuniperVkInstance(const JuniperVkInstance&) = delete;

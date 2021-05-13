@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 
 #include <memory>
 #include <optional>
@@ -14,15 +15,7 @@ namespace jun {
 
 class jun::JuniperDevice {
     public:
-        // JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface);
-        JuniperDevice(const AppInfo& info,
-                      std::shared_ptr<VkInstance> pInstance,
-                      std::shared_ptr<GLFWwindow*> ppWindow,
-                      std::shared_ptr<VkSurfaceKHR> pSurface,
-                      std::shared_ptr<VkPhysicalDevice> pPhysicalDevice,
-                      std::shared_ptr<VkDevice> pDevice,
-                      std::shared_ptr<VkQueue> pGraphicsQueue,
-                      std::shared_ptr<VkQueue> pPresentQueue);
+        JuniperDevice(const AppInfo& info, const JuniperContext& context);
         ~JuniperDevice() = default;
 
         void cleanup();
@@ -34,10 +27,6 @@ class jun::JuniperDevice {
         std::shared_ptr<VkInstance> mpInstance;
         std::shared_ptr<GLFWwindow*> mppWindow;
         std::shared_ptr<VkSurfaceKHR> mpSurface;
-        // VkPhysicalDevice mPhysicalDevice;
-        // VkDevice mDevice;
-        // VkQueue mGraphicsQueue;
-        // VkQueue mPresentQueue;
         std::shared_ptr<VkPhysicalDevice> mpPhysicalDevice;
         std::shared_ptr<VkDevice> mpDevice;
         std::shared_ptr<VkQueue> mpGraphicsQueue;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "JuniperContext.h"
 
 #include <memory>
 
@@ -10,7 +11,7 @@ namespace jun {
 
 class jun::JuniperSurface {
     public:
-        JuniperSurface(std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface);
+        JuniperSurface(const JuniperContext& context);
         ~JuniperSurface() = default;
 
         void cleanup();

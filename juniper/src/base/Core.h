@@ -15,8 +15,3 @@
 
 // STD
 #include <cstdlib>
-
-// Forward declaration of JuniperBase to pass pointer for constructors
-namespace jun {
-    class JuniperBase;
-}

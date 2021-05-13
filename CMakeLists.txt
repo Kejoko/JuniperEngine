@@ -197,6 +197,7 @@ add_library(jun_base
             ${SRC_DIR}/base/JuniperVkInstance.cpp
             ${SRC_DIR}/base/JuniperWindow.cpp
             ${SRC_DIR}/base/AppInfo.h
+            ${SRC_DIR}/base/JuniperContext.h
             ${SRC_DIR}/base/JuniperDevice.h
             ${SRC_DIR}/base/JuniperSurface.h
             ${SRC_DIR}/base/JuniperSwapChain.h

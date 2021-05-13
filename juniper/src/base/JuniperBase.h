@@ -6,6 +6,7 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 #include "JuniperDevice.h"
 #include "JuniperSurface.h"
 #include "JuniperSwapChain.h"
@@ -35,14 +36,8 @@ class jun::JuniperBase {
         
         int mWidth;
         int mHeight;
-
-        std::shared_ptr<VkInstance> mpInstance;
-        std::shared_ptr<GLFWwindow*> mppWindow;
-        std::shared_ptr<VkSurfaceKHR> mpSurface;
-        std::shared_ptr<VkPhysicalDevice> mpPhysicalDevice;
-        std::shared_ptr<VkDevice> mpDevice;
-        std::shared_ptr<VkQueue> mpGraphicsQueue;
-        std::shared_ptr<VkQueue> mpPresentQueue;
+        
+        JuniperContext mJContext;
         JuniperWindow mJWindow;
         JuniperVkInstance mJVkInstance;
         JuniperSurface mJSurface;

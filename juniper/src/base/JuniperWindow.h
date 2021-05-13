@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "JuniperContext.h"
 
 #include <memory>
 #include <string>
@@ -11,7 +12,7 @@ namespace jun {
 
 class jun::JuniperWindow {
     public:
-        JuniperWindow(int width, int height, const std::string& name, std::shared_ptr<GLFWwindow*> ppWindow);
+        JuniperWindow(int width, int height, const std::string& name, const JuniperContext& context);
         ~JuniperWindow() = default;
 
         JuniperWindow(const JuniperWindow&) = delete;

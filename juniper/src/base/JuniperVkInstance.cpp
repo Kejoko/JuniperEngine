@@ -2,20 +2,21 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 
 #include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
-jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info, std::shared_ptr<VkInstance> pInstance) :
+jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info, const JuniperContext& context) :
                                           mMajorVersion{info.mMajorVersion},
                                           mMinorVersion{info.mMinorVersion},
                                           mPatchVersion{info.mPatchVersion},
                                           mName{info.mName},
                                           mValidationLayers{info.mValidationLayers},
                                           mEnableValidationLayers{info.mEnableValidationLayers},
-                                          mpInstance{pInstance} {
+                                          mpInstance{context.mpInstance} {
     createInstance();
     setupDebugMessenger();
 

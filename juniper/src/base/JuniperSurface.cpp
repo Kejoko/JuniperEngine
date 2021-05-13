@@ -1,11 +1,14 @@
 #include "JuniperSurface.h"
 
 #include "Core.h"
+#include "JuniperContext.h"
 
 #include <memory>
 
-jun::JuniperSurface::JuniperSurface(std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface) :
-                                    mpInstance{pInstance}, mppWindow{ppWindow}, mpSurface{pSurface} {
+jun::JuniperSurface::JuniperSurface(const JuniperContext& context) :
+                                    mpInstance{context.mpInstance},
+                                    mppWindow{context.mppWindow},
+                                    mpSurface{context.mpSurface} {
     createSurface();
 
     jun::Logger::trace("JuniperSurface initialized");

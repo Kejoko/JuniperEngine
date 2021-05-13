@@ -1,11 +1,15 @@
 #include "JuniperWindow.h"
 
 #include "Core.h"
+#include "JuniperContext.h"
 
 #include <string>
 
-jun::JuniperWindow::JuniperWindow(int width, int height, const std::string& name, std::shared_ptr<GLFWwindow*> ppWindow) :
-                                  mWidth{width}, mHeight{height}, mName{name}, mppWindow{ppWindow} {
+jun::JuniperWindow::JuniperWindow(int width, int height, const std::string& name, const JuniperContext& context) :
+                                  mWidth{width},
+                                  mHeight{height},
+                                  mName{name},
+                                  mppWindow{context.mppWindow} {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);

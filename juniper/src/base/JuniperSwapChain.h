@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "JuniperContext.h"
 #include "JuniperDevice.h"
 
 #include <memory>
@@ -11,10 +12,7 @@ namespace jun {
 
 class jun::JuniperSwapChain {
     public:
-        JuniperSwapChain(std::shared_ptr<GLFWwindow*> ppWindow,
-                         std::shared_ptr<VkSurfaceKHR> pSurface,
-                         std::shared_ptr<VkPhysicalDevice> pPhysicalDevice,
-                         std::shared_ptr<VkDevice> pDevice);
+        JuniperSwapChain(const JuniperContext& context);
         ~JuniperSwapChain() = default;
 
         void cleanup();
@@ -27,7 +25,6 @@ class jun::JuniperSwapChain {
         std::vector<VkImage> mSwapChainImages;
         VkFormat mSwapChainImageFormat;
         VkExtent2D mSwapChainExtent;
-
 
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);

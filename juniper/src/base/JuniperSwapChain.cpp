@@ -1,16 +1,14 @@
 #include "JuniperSwapChain.h"
 
 #include "Core.h"
+#include "JuniperContext.h"
 #include "JuniperDevice.h"
 
-jun::JuniperSwapChain::JuniperSwapChain(std::shared_ptr<GLFWwindow*> ppWindow,
-                                        std::shared_ptr<VkSurfaceKHR> pSurface,
-                                        std::shared_ptr<VkPhysicalDevice> pPhysicalDevice,
-                                        std::shared_ptr<VkDevice> pDevice) :
-                                        mppWindow{ppWindow},
-                                        mpSurface{pSurface},
-                                        mpDevice{pDevice},
-                                        mpPhysicalDevice{pPhysicalDevice} {
+jun::JuniperSwapChain::JuniperSwapChain(const JuniperContext& context) :
+                                        mppWindow{context.mppWindow},
+                                        mpSurface{context.mpSurface},
+                                        mpDevice{context.mpDevice},
+                                        mpPhysicalDevice{context.mpPhysicalDevice} {
     createSwapChain();
 
     jun::Logger::trace("JuniperSwapChain initialized");

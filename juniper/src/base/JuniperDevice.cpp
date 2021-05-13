@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 
 #include <cstdint>
 #include <algorithm>
@@ -13,32 +14,17 @@
 #include <string>
 #include <vector>
 
-// jun::JuniperDevice::JuniperDevice(const AppInfo& info, std::shared_ptr<VkInstance> pInstance, std::shared_ptr<GLFWwindow*> ppWindow, std::shared_ptr<VkSurfaceKHR> pSurface) :
-                                //   mValidationLayers{info.mValidationLayers},
-                                //   mDeviceExtensions{info.mDeviceExtensions},
-                                //   mEnableValidationLayers{info.mEnableValidationLayers},
-                                //   mpInstance{pInstance},
-                                //   mppWindow{ppWindow},
-                                //   mpSurface{pSurface},
-                                //   mPhysicalDevice{VK_NULL_HANDLE} {
-jun::JuniperDevice::JuniperDevice(const AppInfo& info,
-                                  std::shared_ptr<VkInstance> pInstance,
-                                  std::shared_ptr<GLFWwindow*> ppWindow,
-                                  std::shared_ptr<VkSurfaceKHR> pSurface,
-                                  std::shared_ptr<VkPhysicalDevice> pPhysicalDevice,
-                                  std::shared_ptr<VkDevice> pDevice,
-                                  std::shared_ptr<VkQueue> pGraphicsQueue,
-                                  std::shared_ptr<VkQueue> pPresentQueue) :
+jun::JuniperDevice::JuniperDevice(const AppInfo& info, const JuniperContext& context) :
                                   mValidationLayers{info.mValidationLayers},
                                   mDeviceExtensions{info.mDeviceExtensions},
                                   mEnableValidationLayers{info.mEnableValidationLayers},
-                                  mpInstance{pInstance},
-                                  mppWindow{ppWindow},
-                                  mpSurface{pSurface},
-                                  mpPhysicalDevice{pPhysicalDevice},
-                                  mpDevice{pDevice},
-                                  mpGraphicsQueue{pGraphicsQueue},
-                                  mpPresentQueue{pPresentQueue} {
+                                  mpInstance{context.mpInstance},
+                                  mppWindow{context.mppWindow},
+                                  mpSurface{context.mpSurface},
+                                  mpPhysicalDevice{context.mpPhysicalDevice},
+                                  mpDevice{context.mpDevice},
+                                  mpGraphicsQueue{context.mpGraphicsQueue},
+                                  mpPresentQueue{context.mpPresentQueue} {
     *mpPhysicalDevice = VK_NULL_HANDLE;
 
     pickPhysicalDevice();
@@ -50,7 +36,6 @@ jun::JuniperDevice::JuniperDevice(const AppInfo& info,
 void jun::JuniperDevice::cleanup() {
     jun::Logger::trace("Cleaning up JuniperDevice");
 
-    // vkDestroyDevice(mDevice, nullptr);
     vkDestroyDevice(*mpDevice, nullptr);
 }
 
