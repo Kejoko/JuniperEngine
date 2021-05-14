@@ -7,9 +7,15 @@
 jun::JuniperSwapChain::JuniperSwapChain(const JuniperContext& context) :
                                         mppWindow{context.mppWindow},
                                         mpSurface{context.mpSurface},
+                                        mpPhysicalDevice{context.mpPhysicalDevice},
                                         mpDevice{context.mpDevice},
-                                        mpPhysicalDevice{context.mpPhysicalDevice} {
+                                        mpSwapChain{context.mpSwapChain},
+                                        mpSwapChainImages{context.mpSwapChainImages},
+                                        mpSwapChainImageFormat{context.mpSwapChainImageFormat},
+                                        mpSwapChainExtent{context.mpSwapChainExtent},
+                                        mpSwapChainImageViews{context.mpSwapChainImageViews} {
     createSwapChain();
+    createImageViews();
 
     jun::Logger::trace("JuniperSwapChain initialized");
 }
@@ -17,7 +23,11 @@ jun::JuniperSwapChain::JuniperSwapChain(const JuniperContext& context) :
 void jun::JuniperSwapChain::cleanup() {
     jun::Logger::trace("Cleaning up JuniperSwapChain");
 
-    vkDestroySwapchainKHR(*mpDevice, mSwapChain, nullptr);
+    for (VkImageView imageView : *mpSwapChainImageViews) {
+        vkDestroyImageView(*mpDevice, imageView, nullptr);
+    }
+
+    vkDestroySwapchainKHR(*mpDevice, *mpSwapChain, nullptr);
 }
 
 void jun::JuniperSwapChain::createSwapChain() {
@@ -41,7 +51,7 @@ void jun::JuniperSwapChain::createSwapChain() {
     createInfo.imageFormat = surfaceFormat.format;
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
     createInfo.imageExtent = extent;
-    createInfo.imageArrayLayers = 1;    // Always 1 unless 3d stereoscopic
+    createInfo.imageArrayLayers = 1;    // Always 1 unless 3d stereoscopic (vr)
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // Possible to render images to separate image first to perform operations like post-processing (use different bit)
 
     QueueFamilyIndices indices;
@@ -64,17 +74,17 @@ void jun::JuniperSwapChain::createSwapChain() {
     createInfo.clipped = VK_TRUE;
     createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(*mpDevice, &createInfo, nullptr, &mSwapChain) != VK_SUCCESS) {
+    if (vkCreateSwapchainKHR(*mpDevice, &createInfo, nullptr, mpSwapChain.get()) != VK_SUCCESS) {
         jun::Logger::critical("Failed to create swap chain");
         throw std::runtime_error("Failed to create swap chain");
     }
 
-    vkGetSwapchainImagesKHR(*mpDevice, mSwapChain, &imageCount, nullptr);
-    mSwapChainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(*mpDevice, mSwapChain, &imageCount, mSwapChainImages.data());
+    vkGetSwapchainImagesKHR(*mpDevice, *mpSwapChain, &imageCount, nullptr);
+    mpSwapChainImages->resize(imageCount);
+    vkGetSwapchainImagesKHR(*mpDevice, *mpSwapChain, &imageCount, mpSwapChainImages->data());
 
-    mSwapChainImageFormat = surfaceFormat.format;
-    mSwapChainExtent = extent;
+    *mpSwapChainImageFormat = surfaceFormat.format;
+    *mpSwapChainExtent = extent;
 }
 
 VkSurfaceFormatKHR jun::JuniperSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
@@ -113,5 +123,31 @@ VkExtent2D jun::JuniperSwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKH
         actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
 
         return actualExtent;
+    }
+}
+
+void jun::JuniperSwapChain::createImageViews() {
+    mpSwapChainImageViews->resize(mpSwapChainImages->size());
+
+    for (size_t i = 0; i < mpSwapChainImages->size(); i++) {
+        VkImageViewCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = (*mpSwapChainImages)[i];
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = *mpSwapChainImageFormat;
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(*mpDevice, &createInfo, nullptr, &(*mpSwapChainImageViews)[i]) != VK_SUCCESS) {
+            jun::Logger::critical("Failed to create image views");
+            throw std::runtime_error("Failed to create image views");
+        }
     }
 }

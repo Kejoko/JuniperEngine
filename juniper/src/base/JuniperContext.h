@@ -3,6 +3,7 @@
 #include "Core.h"
 
 #include <memory>
+#include <vector>
 
 namespace jun {
     class JuniperContext;
@@ -20,4 +21,9 @@ class jun::JuniperContext {
         std::shared_ptr<VkDevice> mpDevice = std::make_shared<VkDevice>();
         std::shared_ptr<VkQueue> mpGraphicsQueue = std::make_shared<VkQueue>();
         std::shared_ptr<VkQueue> mpPresentQueue = std::make_shared<VkQueue>();
+        std::shared_ptr<VkSwapchainKHR> mpSwapChain = std::make_shared<VkSwapchainKHR>();
+        std::shared_ptr<std::vector<VkImage>> mpSwapChainImages = std::make_shared<std::vector<VkImage>>();
+        std::shared_ptr<VkFormat> mpSwapChainImageFormat = std::make_shared<VkFormat>();
+        std::shared_ptr<VkExtent2D> mpSwapChainExtent = std::make_shared<VkExtent2D>();
+        std::shared_ptr<std::vector<VkImageView>> mpSwapChainImageViews = std::make_shared<std::vector<VkImageView>>();
 };
