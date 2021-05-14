@@ -2,20 +2,21 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 
 #include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
-jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info, std::shared_ptr<VkInstance> pInstance) :
+jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info, const JuniperContext& context) :
                                           mMajorVersion{info.mMajorVersion},
                                           mMinorVersion{info.mMinorVersion},
                                           mPatchVersion{info.mPatchVersion},
                                           mName{info.mName},
                                           mValidationLayers{info.mValidationLayers},
                                           mEnableValidationLayers{info.mEnableValidationLayers},
-                                          mpInstance{pInstance} {
+                                          mpInstance{context.mpInstance} {
     createInstance();
     setupDebugMessenger();
 
@@ -116,19 +117,19 @@ void jun::JuniperVkInstance::verifyValidationLayerSupport() {
     }
 
     // Ensure all of the desired layers are available
-    for (const char* layerName : mValidationLayers) {
+    for (const char* requiredLayer : mValidationLayers) {
         bool layerFound = false;
 
-        for (const auto& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
+        for (const auto& availableLayer : availableLayers) {
+            if (strcmp(requiredLayer, availableLayer.layerName) == 0) {
                 layerFound = true;
                 break;
             }
         }
 
         if (!layerFound) {
-            jun::Logger::critical("Requested validation layer is not available: " + std::string(layerName));
-            throw std::runtime_error("Requested validation layer is not available: " + std::string(layerName));
+            jun::Logger::critical("Requested validation layer is not available: " + std::string(requiredLayer));
+            throw std::runtime_error("Requested validation layer is not available: " + std::string(requiredLayer));
         }
     }
 }

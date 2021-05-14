@@ -2,23 +2,30 @@
 
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 #include "JuniperDevice.h"
+#include "JuniperSurface.h"
+#include "JuniperSwapChain.h"
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
 #include <memory>
 #include <string>
 
+
 jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
                               mMajorVersion{info.mMajorVersion},
                               mMinorVersion{info.mMinorVersion},
                               mPatchVersion{info.mPatchVersion},
-                              mName{info.mName}, mWidth{width},
+                              mName{info.mName},
+                              mWidth{width},
                               mHeight{height},
-                              mpInstance{std::make_shared<VkInstance>()},
-                              mJWindow{mWidth, mHeight, mName},
-                              mJVkInstance{info, mpInstance},
-                              mJDevice{info, mpInstance} {
+                              mJContext{},
+                              mJWindow{mWidth, mHeight, mName, mJContext},
+                              mJVkInstance{info, mJContext},
+                              mJSurface{mJContext},
+                              mJDevice{info, mJContext},
+                              mJSwapChain{mJContext} {
     jun::Logger::trace("JuniperBase initialized");
 }
 
@@ -33,7 +40,9 @@ void jun::JuniperBase::run() {
 void jun::JuniperBase::cleanup() {
     jun::Logger::trace("Cleaning up JuniperBase");
 
+    mJSwapChain.cleanup();
     mJDevice.cleanup();
+    mJSurface.cleanup();
     mJVkInstance.cleanup();
     mJWindow.cleanup();
 }

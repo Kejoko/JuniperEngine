@@ -1,8 +1,15 @@
 #pragma once
 
+// TODO
+// Make the shared pointers inside of a class/struct called JuniperContext
+// Pass this context around to the constructors instead of passing so many goddamned parameters
+
 #include "Core.h"
 #include "AppInfo.h"
+#include "JuniperContext.h"
 #include "JuniperDevice.h"
+#include "JuniperSurface.h"
+#include "JuniperSwapChain.h"
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
@@ -29,11 +36,13 @@ class jun::JuniperBase {
         
         int mWidth;
         int mHeight;
-
-        std::shared_ptr<VkInstance> mpInstance;
+        
+        JuniperContext mJContext;
         JuniperWindow mJWindow;
         JuniperVkInstance mJVkInstance;
+        JuniperSurface mJSurface;
         JuniperDevice mJDevice;
+        JuniperSwapChain mJSwapChain;
 
         void mainLoop();
 };
