@@ -39,6 +39,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/juniper/src")
+set(SHDR_DIR "${PROJECT_SOURCE_DIR}/juniper/shaders")
 set(VEND_DIR "${PROJECT_SOURCE_DIR}/juniper/vendor")
 
 include_directories(${SRC_DIR})
@@ -223,3 +224,32 @@ target_link_libraries(${PROJECT_NAME}
                       ${JUN_UTIL_LIBS}
                       ${JUN_BASE_LIBS}
                       ${VEND_LIBS})
+
+#======================================================================
+# Compile all shaders to spir-v and link our project to them
+#======================================================================
+function(add_shader TARGET SHADER)
+    find_program(GLSLC glslc)
+
+    set(SHADER_PATH ${SHADER})
+    get_filename_component(SHADER_NAME ${SHADER} NAME)
+    set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/shaders)
+    set(OUTPUT_PATH ${OUTPUT_DIR}/${SHADER_NAME}.spv)
+
+    # Add a custom command to compile GLSL to SPIR-V.
+    file(MAKE_DIRECTORY shaders)
+    add_custom_command(
+            OUTPUT ${OUTPUT_PATH}
+            COMMAND ${GLSLC} ${SHADER_PATH} -o ${OUTPUT_PATH}
+            DEPENDS ${SHADER_PATH}
+            IMPLICIT_DEPENDS CXX ${SHADER_PATH}
+            VERBATIM)
+
+    # Make sure our build depends on this output.
+    set_source_files_properties(${OUTPUT_PATH} PROPERTIES GENERATED TRUE)
+    target_sources(${TARGET} PRIVATE ${OUTPUT_PATH})
+endfunction(add_shader)
+
+add_shader(${PROJECT_NAME} ${SHDR_DIR}/shader.frag)
+add_shader(${PROJECT_NAME} ${SHDR_DIR}/shader.vert)
+

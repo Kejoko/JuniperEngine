@@ -18,8 +18,8 @@ void jun::JuniperPipeline::cleanup() {
 }
 
 void jun::JuniperPipeline::createGraphicsPipeline() {
-    std::vector<char> vertShaderCode = readCompiledShader("juniper/shaders/vert.spv");
+    std::vector<char> vertShaderCode = readCompiledShader("shaders/shader.vert.spv");
     jun::Logger::debug("Vert shader file size: " + std::to_string(vertShaderCode.size()) + " bytes");
-    std::vector<char> fragShaderCode = readCompiledShader("juniper/shaders/frag.spv");
+    std::vector<char> fragShaderCode = readCompiledShader("shaders/shader.frag.spv");
     jun::Logger::debug("Frag shader file size: " + std::to_string(fragShaderCode.size()) + " bytes");
 }
