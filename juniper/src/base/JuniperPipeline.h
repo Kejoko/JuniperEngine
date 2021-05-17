@@ -3,6 +3,9 @@
 #include "Core.h"
 #include "JuniperContext.h"
 
+#include <memory>
+#include <vector>
+
 namespace jun {
     class JuniperPipeline;
 }
@@ -14,5 +17,8 @@ class jun::JuniperPipeline {
 
         void cleanup();
     private:
+        std::shared_ptr<VkDevice> mpDevice = std::make_shared<VkDevice>();
+
         void createGraphicsPipeline();
+        VkShaderModule createShaderModule(const std::vector<char>& byteCode);
 };
