@@ -179,6 +179,11 @@ list(APPEND VEND_LIBS spdlog)
 #======================================================================
 # Juniper utility source code
 #======================================================================
+add_library(jun_Util
+            INTERFACE
+            ${SRC_DIR}/util/FileIO.h)
+list(APPEND JUN_UTIL_LIBS jun_Util)
+
 add_library(jun_Logger
             STATIC
             ${SRC_DIR}/logger/Logger.cpp
@@ -192,16 +197,18 @@ add_library(jun_base
             STATIC
             ${SRC_DIR}/base/JuniperBase.cpp
             ${SRC_DIR}/base/JuniperDevice.cpp
+            ${SRC_DIR}/base/JuniperPipeline.cpp
             ${SRC_DIR}/base/JuniperSurface.cpp
             ${SRC_DIR}/base/JuniperSwapChain.cpp
             ${SRC_DIR}/base/JuniperVkInstance.cpp
             ${SRC_DIR}/base/JuniperWindow.cpp
             ${SRC_DIR}/base/AppInfo.h
+            ${SRC_DIR}/base/JuniperBase.h
             ${SRC_DIR}/base/JuniperContext.h
             ${SRC_DIR}/base/JuniperDevice.h
+            ${SRC_DIR}/base/JuniperPipeline.h
             ${SRC_DIR}/base/JuniperSurface.h
             ${SRC_DIR}/base/JuniperSwapChain.h
-            ${SRC_DIR}/base/JuniperBase.h
             ${SRC_DIR}/base/JuniperVkInstance.h
             ${SRC_DIR}/base/JuniperWindow.h)
 list(APPEND JUN_BASE_LIBS jun_base)
