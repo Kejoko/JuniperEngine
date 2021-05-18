@@ -11,6 +11,7 @@ jun::JuniperPipeline::JuniperPipeline(const JuniperContext& context) :
                                       mpDevice{context.mpDevice},
                                       mpSwapChainExtent{context.mpSwapChainExtent},
                                       mpPipelineLayout{context.mpPipelineLayout} {
+    createRenderPass();
     createGraphicsPipeline();
 
     jun::Logger::trace("JuniperGraphicsPipeline initialized");
@@ -19,6 +20,10 @@ jun::JuniperPipeline::JuniperPipeline(const JuniperContext& context) :
 void jun::JuniperPipeline::cleanup() {
     jun::Logger::trace("Cleaning up JuniperGraphicsPipeline");
     vkDestroyPipelineLayout(*mpDevice, *mpPipelineLayout, nullptr);
+}
+
+void jun::JuniperPipeline::createRenderPass() {
+    
 }
 
 void jun::JuniperPipeline::createGraphicsPipeline() {
