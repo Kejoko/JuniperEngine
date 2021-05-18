@@ -17,7 +17,9 @@ class jun::JuniperPipeline {
 
         void cleanup();
     private:
-        std::shared_ptr<VkDevice> mpDevice = std::make_shared<VkDevice>();
+        std::shared_ptr<VkDevice> mpDevice;
+        std::shared_ptr<VkExtent2D> mpSwapChainExtent;
+        std::shared_ptr<VkPipelineLayout> mpPipelineLayout;
 
         void createGraphicsPipeline();
         VkShaderModule createShaderModule(const std::vector<char>& byteCode);
