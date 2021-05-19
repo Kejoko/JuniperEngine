@@ -18,7 +18,9 @@ class jun::JuniperPipeline {
         void cleanup();
     private:
         std::shared_ptr<VkDevice> mpDevice;
+        std::shared_ptr<VkFormat> mpSwapChainImageFormat;
         std::shared_ptr<VkExtent2D> mpSwapChainExtent;
+        std::shared_ptr<VkRenderPass> mpRenderPass;
         std::shared_ptr<VkPipelineLayout> mpPipelineLayout;
 
         void createRenderPass();
