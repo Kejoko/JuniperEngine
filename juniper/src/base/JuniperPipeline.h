@@ -22,6 +22,7 @@ class jun::JuniperPipeline {
         std::shared_ptr<VkExtent2D> mpSwapChainExtent;
         std::shared_ptr<VkRenderPass> mpRenderPass;
         std::shared_ptr<VkPipelineLayout> mpPipelineLayout;
+        std::shared_ptr<VkPipeline> mpGraphicsPipeline;
 
         void createRenderPass();
         void createGraphicsPipeline();

@@ -12,7 +12,8 @@ jun::JuniperPipeline::JuniperPipeline(const JuniperContext& context) :
                                       mpSwapChainImageFormat{context.mpSwapChainImageFormat},
                                       mpSwapChainExtent{context.mpSwapChainExtent},
                                       mpRenderPass{context.mpRenderPass},
-                                      mpPipelineLayout{context.mpPipelineLayout} {
+                                      mpPipelineLayout{context.mpPipelineLayout},
+                                      mpGraphicsPipeline{context.mpGraphicsPipeline} {
     createRenderPass();
     createGraphicsPipeline();
 
@@ -22,6 +23,7 @@ jun::JuniperPipeline::JuniperPipeline(const JuniperContext& context) :
 void jun::JuniperPipeline::cleanup() {
     jun::Logger::trace("Cleaning up JuniperGraphicsPipeline");
 
+    vkDestroyPipeline(*mpDevice, *mpGraphicsPipeline, nullptr);
     vkDestroyPipelineLayout(*mpDevice, *mpPipelineLayout, nullptr);
     vkDestroyRenderPass(*mpDevice, *mpRenderPass, nullptr);
 }
@@ -210,6 +212,31 @@ void jun::JuniperPipeline::createGraphicsPipeline() {
     if (vkCreatePipelineLayout(*mpDevice, &pipelineLayoutInfo, nullptr, mpPipelineLayout.get()) != VK_SUCCESS) {
         jun::Logger::critical("Failed to create pipeline layout");
         throw std::runtime_error("Failed to create pipeline layout");
+    }
+
+    // Actually create the pipeline now
+
+    VkGraphicsPipelineCreateInfo pipelineInfo{};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pDepthStencilState = nullptr;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDynamicState = nullptr;
+    pipelineInfo.layout = *mpPipelineLayout;
+    pipelineInfo.renderPass = *mpRenderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+    pipelineInfo.basePipelineIndex = -1;
+
+    if (vkCreateGraphicsPipelines(*mpDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, mpGraphicsPipeline.get()) != VK_SUCCESS) {
+        jun::Logger::critical("Failed to create graphics pipeline");
+        throw std::runtime_error("Failed to create graphics pipeline");
     }
     
     /*
