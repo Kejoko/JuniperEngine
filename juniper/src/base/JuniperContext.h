@@ -29,4 +29,5 @@ class jun::JuniperContext {
         std::shared_ptr<VkRenderPass> mpRenderPass = std::make_shared<VkRenderPass>();
         std::shared_ptr<VkPipelineLayout> mpPipelineLayout = std::make_shared<VkPipelineLayout>();
         std::shared_ptr<VkPipeline> mpGraphicsPipeline = std::make_shared<VkPipeline>();
+        std::shared_ptr<std::vector<VkFramebuffer>> mpSwapChainFramebuffers = std::make_shared<std::vector<VkFramebuffer>>();
 };
