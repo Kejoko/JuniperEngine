@@ -20,7 +20,12 @@ class jun::JuniperCommandBuffer {
         std::shared_ptr<VkSurfaceKHR> mpSurface;
         std::shared_ptr<VkPhysicalDevice> mpPhysicalDevice;
         std::shared_ptr<VkDevice> mpDevice;
+        std::shared_ptr<VkExtent2D> mpSwapChainExtent;
+        std::shared_ptr<VkRenderPass> mpRenderPass;
+        std::shared_ptr<VkPipeline> mpGraphicsPipeline;
+        std::shared_ptr<std::vector<VkFramebuffer>> mpSwapChainFramebuffers;
         std::shared_ptr<VkCommandPool> mpCommandPool;
+        std::shared_ptr<std::vector<VkCommandBuffer>> mpCommandBuffers;
 
         void createCommandPool();
         void createCommandBuffers();

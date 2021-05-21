@@ -12,6 +12,7 @@ jun::JuniperFrameBuffer::JuniperFrameBuffer(const JuniperContext& context) :
                                             mpSwapChainImageViews{context.mpSwapChainImageViews},
                                             mpRenderPass{context.mpRenderPass},
                                             mpSwapChainFramebuffers{context.mpSwapChainFramebuffers} {
+    createFrameBuffers();
     jun::Logger::trace("JuniperFrameBuffer initialized");
 }
 

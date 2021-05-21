@@ -31,4 +31,5 @@ class jun::JuniperContext {
         std::shared_ptr<VkPipeline> mpGraphicsPipeline = std::make_shared<VkPipeline>();
         std::shared_ptr<std::vector<VkFramebuffer>> mpSwapChainFramebuffers = std::make_shared<std::vector<VkFramebuffer>>();
         std::shared_ptr<VkCommandPool> mpCommandPool = std::make_shared<VkCommandPool>();
+        std::shared_ptr<std::vector<VkCommandBuffer>> mpCommandBuffers = std::make_shared<std::vector<VkCommandBuffer>>();
 };
