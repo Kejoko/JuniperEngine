@@ -197,6 +197,7 @@ list(APPEND JUN_UTIL_LIBS jun_Logger)
 add_library(jun_base
             STATIC
             ${SRC_DIR}/base/JuniperBase.cpp
+            ${SRC_DIR}/base/JuniperCommandBuffer.cpp
             ${SRC_DIR}/base/JuniperDevice.cpp
             ${SRC_DIR}/base/JuniperFrameBuffer.cpp
             ${SRC_DIR}/base/JuniperPipeline.cpp
@@ -206,6 +207,7 @@ add_library(jun_base
             ${SRC_DIR}/base/JuniperWindow.cpp
             ${SRC_DIR}/base/AppInfo.h
             ${SRC_DIR}/base/JuniperBase.h
+            ${SRC_DIR}/base/JuniperCommandBuffer.h
             ${SRC_DIR}/base/JuniperContext.h
             ${SRC_DIR}/base/JuniperDevice.h
             ${SRC_DIR}/base/JuniperFrameBuffer.h

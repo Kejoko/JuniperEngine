@@ -7,6 +7,7 @@
 #include "Core.h"
 #include "AppInfo.h"
 #include "JuniperContext.h"
+#include "JuniperCommandBuffer.h"
 #include "JuniperDevice.h"
 #include "JuniperFrameBuffer.h"
 #include "JuniperPipeline.h"
@@ -47,6 +48,7 @@ class jun::JuniperBase {
         JuniperSwapChain mJSwapChain;
         JuniperPipeline mJPipeline;
         JuniperFrameBuffer mJFrameBuffer;
+        JuniperCommandBuffer mJCommandBuffer;
 
         void mainLoop();
 };

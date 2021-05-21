@@ -27,7 +27,8 @@ jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
                               mJDevice{info, mJContext},
                               mJSwapChain{mJContext},
                               mJPipeline{mJContext},
-                              mJFrameBuffer(mJContext) {
+                              mJFrameBuffer{mJContext},
+                              mJCommandBuffer{mJContext} {
     jun::Logger::trace("JuniperBase initialized");
 }
 
@@ -42,6 +43,7 @@ void jun::JuniperBase::run() {
 void jun::JuniperBase::cleanup() {
     jun::Logger::trace("Cleaning up JuniperBase");
 
+    mJCommandBuffer.cleanup();
     mJFrameBuffer.cleanup();
     mJPipeline.cleanup();
     mJSwapChain.cleanup();
