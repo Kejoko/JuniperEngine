@@ -8,12 +8,13 @@
 #include <vector>
 
 jun::JuniperPipeline::JuniperPipeline(const JuniperContext& context) :
-                                      mpDevice{context.mpDevice},
-                                      mpSwapChainImageFormat{context.mpSwapChainImageFormat},
-                                      mpSwapChainExtent{context.mpSwapChainExtent},
-                                      mpRenderPass{context.mpRenderPass},
-                                      mpPipelineLayout{context.mpPipelineLayout},
-                                      mpGraphicsPipeline{context.mpGraphicsPipeline} {
+    mpDevice(context.mpDevice),
+    mpSwapChainImageFormat(context.mpSwapChainImageFormat),
+    mpSwapChainExtent(context.mpSwapChainExtent),
+    mpRenderPass(context.mpRenderPass),
+    mpPipelineLayout(context.mpPipelineLayout),
+    mpGraphicsPipeline(context.mpGraphicsPipeline)
+{
     createRenderPass();
     createGraphicsPipeline();
 
@@ -68,7 +69,6 @@ void jun::JuniperPipeline::createRenderPass() {
 }
 
 void jun::JuniperPipeline::createGraphicsPipeline() {
-
     // Shader modules:
 
     std::vector<char> vertShaderCode = readCompiledShader("shaders/shader.vert.spv");

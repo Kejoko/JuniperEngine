@@ -1,22 +1,23 @@
 #include "JuniperCommandBuffer.h"
 
+#include <memory>
+#include <vector>
+
 #include "Core.h"
 #include "JuniperContext.h"
 #include "JuniperDevice.h"
 
-#include <memory>
-#include <vector>
-
 jun::JuniperCommandBuffer::JuniperCommandBuffer(const JuniperContext& context) :
-                                                mpSurface{context.mpSurface},
-                                                mpPhysicalDevice{context.mpPhysicalDevice},
-                                                mpDevice{context.mpDevice},
-                                                mpSwapChainExtent{context.mpSwapChainExtent},
-                                                mpRenderPass{context.mpRenderPass},
-                                                mpGraphicsPipeline{context.mpGraphicsPipeline},
-                                                mpSwapChainFramebuffers{context.mpSwapChainFramebuffers},
-                                                mpCommandPool{context.mpCommandPool},
-                                                mpCommandBuffers{context.mpCommandBuffers} {
+    mpSurface(context.mpSurface),
+    mpPhysicalDevice(context.mpPhysicalDevice),
+    mpDevice(context.mpDevice),
+    mpSwapChainExtent(context.mpSwapChainExtent),
+    mpRenderPass(context.mpRenderPass),
+    mpGraphicsPipeline(context.mpGraphicsPipeline),
+    mpSwapChainFramebuffers(context.mpSwapChainFramebuffers),
+    mpCommandPool(context.mpCommandPool),
+    mpCommandBuffers(context.mpCommandBuffers)
+{
     createCommandPool();
     createCommandBuffers();
     jun::Logger::trace("JuniperCommandBuffer initialized");

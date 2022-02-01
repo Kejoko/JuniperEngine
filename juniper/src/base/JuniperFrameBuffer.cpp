@@ -1,17 +1,18 @@
 #include "JuniperFrameBuffer.h"
 
-#include "Core.h"
-#include "JuniperContext.h"
-
 #include <memory>
 #include <vector>
 
+#include "Core.h"
+#include "JuniperContext.h"
+
 jun::JuniperFrameBuffer::JuniperFrameBuffer(const JuniperContext& context) :
-                                            mpDevice{context.mpDevice},
-                                            mpSwapChainExtent{context.mpSwapChainExtent},
-                                            mpSwapChainImageViews{context.mpSwapChainImageViews},
-                                            mpRenderPass{context.mpRenderPass},
-                                            mpSwapChainFramebuffers{context.mpSwapChainFramebuffers} {
+    mpDevice(context.mpDevice),
+    mpSwapChainExtent(context.mpSwapChainExtent),
+    mpSwapChainImageViews(context.mpSwapChainImageViews),
+    mpRenderPass(context.mpRenderPass),
+    mpSwapChainFramebuffers(context.mpSwapChainFramebuffers)
+{
     createFrameBuffers();
     jun::Logger::trace("JuniperFrameBuffer initialized");
 }

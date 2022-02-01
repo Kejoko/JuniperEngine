@@ -70,8 +70,9 @@ void jun::JuniperVkInstance::createInstance() {
         jun::Logger::info(std::string("\t") + std::string(extension.extensionName));
     }
 
-    // Ensure all of the required extensions are available
-    // Todo
+    /**
+     * @todo Ensure all of the required extensions are available
+     */
 
     // Tell the driver which global extensions and validation layers we would like to use
     VkInstanceCreateInfo createInfo{};

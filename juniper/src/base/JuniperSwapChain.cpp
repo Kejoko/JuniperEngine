@@ -5,15 +5,16 @@
 #include "JuniperDevice.h"
 
 jun::JuniperSwapChain::JuniperSwapChain(const JuniperContext& context) :
-                                        mppWindow{context.mppWindow},
-                                        mpSurface{context.mpSurface},
-                                        mpPhysicalDevice{context.mpPhysicalDevice},
-                                        mpDevice{context.mpDevice},
-                                        mpSwapChain{context.mpSwapChain},
-                                        mpSwapChainImages{context.mpSwapChainImages},
-                                        mpSwapChainImageFormat{context.mpSwapChainImageFormat},
-                                        mpSwapChainExtent{context.mpSwapChainExtent},
-                                        mpSwapChainImageViews{context.mpSwapChainImageViews} {
+    mppWindow(context.mppWindow),
+    mpSurface(context.mpSurface),
+    mpPhysicalDevice(context.mpPhysicalDevice),
+    mpDevice(context.mpDevice),
+    mpSwapChain(context.mpSwapChain),
+    mpSwapChainImages(context.mpSwapChainImages),
+    mpSwapChainImageFormat(context.mpSwapChainImageFormat),
+    mpSwapChainExtent(context.mpSwapChainExtent),
+    mpSwapChainImageViews(context.mpSwapChainImageViews)
+{
     createSwapChain();
     createImageViews();
 

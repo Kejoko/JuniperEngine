@@ -66,7 +66,6 @@ void jun::JuniperDevice::pickPhysicalDevice() {
 
     // Ensure that the best candidate really is suitable
     if (candidates.rbegin()->first > 0) {
-        // mPhysicalDevice = candidates.rbegin()->second;
         *mpPhysicalDevice = candidates.rbegin()->second;
     } else {
         jun::Logger::critical("Failed to find a suitable GPU");
@@ -162,8 +161,9 @@ bool jun::JuniperDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
     return true;
 }
 
-// Todo
-// Add logic to prefer a device which supports drawing and presentation in the same queue for performance benefits
+/**
+ * @todo Add logic to prefer a device which supports drawing and presentation in the same queue for performance benefits
+ */
 
 void jun::JuniperDevice::createLogicalDevice() {
     QueueFamilyIndices indices;
@@ -205,14 +205,11 @@ void jun::JuniperDevice::createLogicalDevice() {
     }
 
     // Create the device and get its device queue
-    // if (vkCreateDevice(mPhysicalDevice, &createInfo, nullptr, &mDevice) != VK_SUCCESS) {
     if (vkCreateDevice(*mpPhysicalDevice, &createInfo, nullptr, mpDevice.get()) != VK_SUCCESS) {
         jun::Logger::critical("Failed to create logical device");
         throw std::runtime_error("Failed to create logical device");
     }
 
-    // vkGetDeviceQueue(mDevice, indices.mGraphicsFamily.value(), 0, &mGraphicsQueue);
-    // vkGetDeviceQueue(mDevice, indices.mPresentFamily.value(), 0, &mGraphicsQueue);
     vkGetDeviceQueue(*mpDevice, indices.mGraphicsFamily.value(), 0, mpGraphicsQueue.get());
     vkGetDeviceQueue(*mpDevice, indices.mPresentFamily.value(), 0, mpGraphicsQueue.get());
 }

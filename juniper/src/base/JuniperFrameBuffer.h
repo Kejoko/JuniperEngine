@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Core.h"
-#include "JuniperContext.h"
-
 #include <memory>
 #include <vector>
+
+#include "Core.h"
+#include "JuniperContext.h"
 
 namespace jun {
     class JuniperFrameBuffer;

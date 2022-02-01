@@ -1,10 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "Core.h"
 #include "JuniperContext.h"
 #include "JuniperDevice.h"
-
-#include <memory>
 
 namespace jun {
     class JuniperSwapChain;
