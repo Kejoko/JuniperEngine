@@ -1,14 +1,25 @@
 #pragma once
 
-#include "Core.h"
-
 #include <memory>
 #include <vector>
+
+#include "Core.h"
 
 namespace jun {
     class JuniperContext;
 }
 
+/**
+ * @brief This is where all of the grimy "low level" stuff lives. When I say
+ * low level, I mean window interface stuff. Stuff that we want to abstract
+ * away so we don't need to think about it later.
+ * 
+ * @details These are all shared pointers to things so they can be declared
+ * when the JuniperBase instance is created. JuniperBase owns the
+ * JuniperContext and all of the other base objects use these pointers for
+ * their functionality. 
+ * 
+ */
 class jun::JuniperContext {
     public:
         JuniperContext() = default;

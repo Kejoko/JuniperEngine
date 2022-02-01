@@ -1,19 +1,25 @@
 #include "JuniperWindow.h"
 
+#include <string>
+
 #include "Core.h"
 #include "JuniperContext.h"
 
-#include <string>
-
-jun::JuniperWindow::JuniperWindow(int width, int height, const std::string& name, const JuniperContext& context) :
-                                  mWidth{width},
-                                  mHeight{height},
-                                  mName{name},
-                                  mppWindow{context.mppWindow} {
+jun::JuniperWindow::JuniperWindow(
+    int windowWidth,
+    int windowHeight,
+    const std::string& name,
+    const JuniperContext& context
+) :
+    mWindowWidth(windowWidth),
+    mWindowHeight(windowHeight),
+    mName(name),
+    mppWindow(context.mppWindow) 
+{
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    *mppWindow = glfwCreateWindow(mWidth, mHeight, mName.c_str(), nullptr, nullptr);
+    *mppWindow = glfwCreateWindow(mWindowWidth, mWindowHeight, mName.c_str(), nullptr, nullptr);
     
     jun::Logger::trace("JuniperWindow initialized");
 }
