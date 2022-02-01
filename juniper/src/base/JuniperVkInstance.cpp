@@ -1,22 +1,26 @@
 #include "JuniperVkInstance.h"
 
-#include "Core.h"
-#include "AppInfo.h"
-#include "JuniperContext.h"
-
 #include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
-jun::JuniperVkInstance::JuniperVkInstance(const AppInfo& info, const JuniperContext& context) :
-                                          mMajorVersion{info.mMajorVersion},
-                                          mMinorVersion{info.mMinorVersion},
-                                          mPatchVersion{info.mPatchVersion},
-                                          mName{info.mName},
-                                          mValidationLayers{info.mValidationLayers},
-                                          mEnableValidationLayers{info.mEnableValidationLayers},
-                                          mpInstance{context.mpInstance} {
+#include "Core.h"
+#include "AppInfo.h"
+#include "JuniperContext.h"
+
+jun::JuniperVkInstance::JuniperVkInstance(
+    const AppInfo& appInfo,
+    const JuniperContext& context
+) :
+    mName(appInfo.mName),
+    mMajorVersion(appInfo.mMajorVersion),
+    mMinorVersion(appInfo.mMinorVersion),
+    mPatchVersion(appInfo.mPatchVersion),
+    mValidationLayers(appInfo.mValidationLayers),
+    mEnableValidationLayers(appInfo.mEnableValidationLayers),
+    mpInstance(context.mpInstance)
+{
     createInstance();
     setupDebugMessenger();
 
@@ -187,7 +191,8 @@ void jun::JuniperVkInstance::populateDebugMessengerCreateInfo(VkDebugUtilsMessen
 VkResult jun::JuniperVkInstance::createDebugUtilsMessengerEXT(
     const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
     const VkAllocationCallbacks* pAllocator,
-    VkDebugUtilsMessengerEXT* pDebugMessenger) {
+    VkDebugUtilsMessengerEXT* pDebugMessenger
+) {
     jun::Logger::trace("Loading Vulkan function to create the debug messenger");
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(*mpInstance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
@@ -201,7 +206,8 @@ VkResult jun::JuniperVkInstance::createDebugUtilsMessengerEXT(
 
 void jun::JuniperVkInstance::destroyDebugUtilsMessengerEXT(
     VkDebugUtilsMessengerEXT debugMessenger,
-    const VkAllocationCallbacks* pAllocator) {
+    const VkAllocationCallbacks* pAllocator
+) {
     if (!mEnableValidationLayers) return;
 
     jun::Logger::trace("Loading function to destroy debug messenger");
@@ -219,8 +225,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL jun::JuniperVkInstance::debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType,
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-    void* pUserData) {
-
+    void* pUserData
+) {
     std::string message = "Validation layer: ";
     message += pCallbackData->pMessage;
 

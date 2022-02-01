@@ -1,19 +1,23 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 #include "Core.h"
 #include "AppInfo.h"
 #include "JuniperContext.h"
-
-#include <memory>
-#include <string>
 
 namespace jun {
     class JuniperVkInstance;
 }
 
+/**
+ * @brief The interface to the Vulkan Instance, so we may actually talk
+ * to the graphics card.
+ */
 class jun::JuniperVkInstance {
     public:
-        JuniperVkInstance(const AppInfo& info, const JuniperContext& context);
+        JuniperVkInstance(const AppInfo& appInfo, const JuniperContext& context);
         ~JuniperVkInstance() = default;
 
         JuniperVkInstance(const JuniperVkInstance&) = delete;
@@ -25,13 +29,17 @@ class jun::JuniperVkInstance {
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
             VkDebugUtilsMessageTypeFlagsEXT messageType,
             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-            void* pUserData);
+            void* pUserData
+        );
 
     private:
+        /**
+         * @todo JUST SAVE THE APP INFO >:(
+         */
+        std::string mName;
         int mMajorVersion;
         int mMinorVersion;
         int mPatchVersion;
-        std::string mName;
         
         const std::vector<const char*> mValidationLayers;
         const bool mEnableValidationLayers;
@@ -42,10 +50,16 @@ class jun::JuniperVkInstance {
         void verifyValidationLayerSupport();
         std::vector<const char*> getRequiredExtensions();
         void setupDebugMessenger();
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-        VkResult createDebugUtilsMessengerEXT(const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-                                              const VkAllocationCallbacks* pAllocator,
-                                              VkDebugUtilsMessengerEXT* pDebugMessenger);
-        void destroyDebugUtilsMessengerEXT(VkDebugUtilsMessengerEXT debugMessenger,
-                                           const VkAllocationCallbacks* pAllocator);
+        void populateDebugMessengerCreateInfo(
+            VkDebugUtilsMessengerCreateInfoEXT& createInfo
+        );
+        VkResult createDebugUtilsMessengerEXT(
+            const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+            const VkAllocationCallbacks* pAllocator,
+            VkDebugUtilsMessengerEXT* pDebugMessenger
+        );
+        void destroyDebugUtilsMessengerEXT(
+            VkDebugUtilsMessengerEXT debugMessenger,
+            const VkAllocationCallbacks* pAllocator
+        );
 };
