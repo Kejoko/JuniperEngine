@@ -23,8 +23,8 @@ int main() {
     try {
         base.run();
     } catch (const std::exception& e) {
-        std::string excMsg(e.what());
-        jun::Logger::critical("Exception raised running base in main:\n" + excMsg);
+        std::string exceptionMessage(e.what());
+        jun::Logger::critical("Exception raised running base in main:\n" + exceptionMessage);
         return EXIT_FAILURE;
     }
 

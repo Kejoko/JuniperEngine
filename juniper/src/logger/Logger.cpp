@@ -1,9 +1,5 @@
 #include "Logger.h"
 
-#include "spdlog/async.h"
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 #include <ctime>
 #include <iomanip>
 #include <iostream>
@@ -13,8 +9,12 @@
 #include <string>
 #include <vector>
 
+#include "spdlog/async.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 bool jun::Logger::initialized = false;
-std::shared_ptr<spdlog::async_logger> jun::Logger::logger = nullptr;
+std::shared_ptr<spdlog::async_logger> jun::Logger::m_logger = nullptr;
 
 void jun::Logger::init() {
     if (initialized) return;
@@ -37,21 +37,21 @@ void jun::Logger::init() {
     sinks.push_back(stdoutSink);
     sinks.push_back(fileSink);
 
-    logger = std::make_shared<spdlog::async_logger>("master logger", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+    m_logger = std::make_shared<spdlog::async_logger>("master logger", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
     #if defined(BUILD_DEBUG)
-    logger->set_level(spdlog::level::trace);
+    m_logger->set_level(spdlog::level::trace);
     #elif defined(BUILD_TEST)
-    logger->set_level(spdlog::level::info);
+    m_logger->set_level(spdlog::level::info);
     #elif defined(BUILD_RELEASE)
-    logger->set_level(spdlog::level::err);
+    m_logger->set_level(spdlog::level::err);
     #endif
 
-    spdlog::register_logger(logger);
+    spdlog::register_logger(m_logger);
 
     spdlog::set_pattern("[%T:%e] [%^%=10l%$] %v");
 
     initialized = true;
-    logger->info("Logger initialized. Writing to logfile: " + fileName);
+    m_logger->info("Logger initialized. Writing to logfile: " + fileName);
 }
 
 void jun::Logger::assertInitialized() {
@@ -65,30 +65,30 @@ void jun::Logger::assertInitialized() {
 
 void jun::Logger::trace(std::string message) {
     assertInitialized();
-    logger->trace(message);
+    m_logger->trace(message);
 }
 
 void jun::Logger::debug(std::string message) {
     assertInitialized();
-    logger->debug(message);
+    m_logger->debug(message);
 }
 
 void jun::Logger::info(std::string message) {
     assertInitialized();
-    logger->info(message);
+    m_logger->info(message);
 }
 
 void jun::Logger::warn(std::string message) {
     assertInitialized();
-    logger->warn(message);
+    m_logger->warn(message);
 }
 
 void jun::Logger::error(std::string message) {
     assertInitialized();
-    logger->error(message);
+    m_logger->error(message);
 }
 
 void jun::Logger::critical(std::string message) {
     assertInitialized();
-    logger->critical(message);
+    m_logger->critical(message);
 }

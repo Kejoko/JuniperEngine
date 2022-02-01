@@ -12,8 +12,9 @@ std::vector<char> jun::readCompiledShader(const std::string& filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
-        jun::Logger::critical("Failed to open file: " + filename);
-        throw std::runtime_error("Failed to open file: " + filename);
+        std::string openFailureString = "Failed to open shader file: " + filename;
+        jun::Logger::critical(openFailureString);
+        throw std::runtime_error(openFailureString);
     }
 
     size_t fileSize = (size_t) file.tellg();

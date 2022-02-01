@@ -1,9 +1,9 @@
 #pragma once
 
-#include "spdlog/spdlog.h"
-#include "spdlog/async.h"
-
 #include <memory>
+
+#include "spdlog/async.h"
+#include "spdlog/spdlog.h"
 
 namespace jun {
     class Logger;
@@ -27,5 +27,5 @@ class jun::Logger {
         static void assertInitialized();
 
         static bool initialized;
-        static std::shared_ptr<spdlog::async_logger> logger;
+        static std::shared_ptr<spdlog::async_logger> m_logger;
 };
