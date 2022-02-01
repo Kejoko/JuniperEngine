@@ -11,10 +11,6 @@ namespace jun {
     class JuniperVkInstance;
 }
 
-/**
- * @brief The interface to the Vulkan Instance, so we may actually talk
- * to the graphics card.
- */
 class jun::JuniperVkInstance {
     public:
         JuniperVkInstance(const AppInfo& appInfo, const JuniperContext& context);

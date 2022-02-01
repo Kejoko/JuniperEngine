@@ -1,11 +1,11 @@
 #pragma once
 
+#include <memory>
+#include <optional>
+
 #include "Core.h"
 #include "AppInfo.h"
 #include "JuniperContext.h"
-
-#include <memory>
-#include <optional>
 
 namespace jun {
     class JuniperDevice;
@@ -15,7 +15,7 @@ namespace jun {
 
 class jun::JuniperDevice {
     public:
-        JuniperDevice(const AppInfo& info, const JuniperContext& context);
+        JuniperDevice(const AppInfo& appInfo, const JuniperContext& context);
         ~JuniperDevice() = default;
 
         void cleanup();

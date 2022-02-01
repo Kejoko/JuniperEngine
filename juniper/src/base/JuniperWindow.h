@@ -10,10 +10,6 @@ namespace jun {
     class JuniperWindow;
 }
 
-/**
- * @brief The window we render things to :)
- * 
- */
 class jun::JuniperWindow {
     public:
         JuniperWindow(

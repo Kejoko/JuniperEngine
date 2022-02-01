@@ -1,9 +1,5 @@
 #include "JuniperDevice.h"
 
-#include "Core.h"
-#include "AppInfo.h"
-#include "JuniperContext.h"
-
 #include <cstdint>
 #include <algorithm>
 #include <map>
@@ -14,17 +10,25 @@
 #include <string>
 #include <vector>
 
-jun::JuniperDevice::JuniperDevice(const AppInfo& info, const JuniperContext& context) :
-                                  mValidationLayers{info.mValidationLayers},
-                                  mDeviceExtensions{info.mDeviceExtensions},
-                                  mEnableValidationLayers{info.mEnableValidationLayers},
-                                  mpInstance{context.mpInstance},
-                                  mppWindow{context.mppWindow},
-                                  mpSurface{context.mpSurface},
-                                  mpPhysicalDevice{context.mpPhysicalDevice},
-                                  mpDevice{context.mpDevice},
-                                  mpGraphicsQueue{context.mpGraphicsQueue},
-                                  mpPresentQueue{context.mpPresentQueue} {
+#include "Core.h"
+#include "AppInfo.h"
+#include "JuniperContext.h"
+
+jun::JuniperDevice::JuniperDevice(
+    const AppInfo& appInfo,
+    const JuniperContext& context
+) :
+    mValidationLayers(appInfo.mValidationLayers),
+    mDeviceExtensions(appInfo.mDeviceExtensions),
+    mEnableValidationLayers(appInfo.mEnableValidationLayers),
+    mpInstance(context.mpInstance),
+    mppWindow(context.mppWindow),
+    mpSurface(context.mpSurface),
+    mpPhysicalDevice(context.mpPhysicalDevice),
+    mpDevice(context.mpDevice),
+    mpGraphicsQueue(context.mpGraphicsQueue),
+    mpPresentQueue(context.mpPresentQueue)
+{
     *mpPhysicalDevice = VK_NULL_HANDLE;
 
     pickPhysicalDevice();

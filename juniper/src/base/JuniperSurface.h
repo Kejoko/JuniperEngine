@@ -1,9 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include "Core.h"
 #include "JuniperContext.h"
-
-#include <memory>
 
 namespace jun {
     class JuniperSurface;

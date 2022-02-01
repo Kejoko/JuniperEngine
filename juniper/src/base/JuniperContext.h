@@ -25,17 +25,21 @@ class jun::JuniperContext {
         JuniperContext() = default;
         ~JuniperContext() = default;
 
+        // JuniperVkInstance, JuniperSurface, JuniperDevice
         std::shared_ptr<VkInstance> mpInstance = std::make_shared<VkInstance>();
 
-        // JuniperWindow
+        // JuniperWindow, JuniperSurface, JuniperDevice
         std::shared_ptr<GLFWwindow*> mppWindow = std::make_shared<GLFWwindow*>();
 
-        
+        // JuniperSurface, JuniperDevice
         std::shared_ptr<VkSurfaceKHR> mpSurface = std::make_shared<VkSurfaceKHR>();
+        
+        // JuniperDevice
         std::shared_ptr<VkPhysicalDevice> mpPhysicalDevice = std::make_shared<VkPhysicalDevice>();
         std::shared_ptr<VkDevice> mpDevice = std::make_shared<VkDevice>();
         std::shared_ptr<VkQueue> mpGraphicsQueue = std::make_shared<VkQueue>();
         std::shared_ptr<VkQueue> mpPresentQueue = std::make_shared<VkQueue>();
+        
         std::shared_ptr<VkSwapchainKHR> mpSwapChain = std::make_shared<VkSwapchainKHR>();
         std::shared_ptr<std::vector<VkImage>> mpSwapChainImages = std::make_shared<std::vector<VkImage>>();
         std::shared_ptr<VkFormat> mpSwapChainImageFormat = std::make_shared<VkFormat>();

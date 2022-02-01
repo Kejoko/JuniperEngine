@@ -1,14 +1,15 @@
 #include "JuniperSurface.h"
 
+#include <memory>
+
 #include "Core.h"
 #include "JuniperContext.h"
 
-#include <memory>
-
 jun::JuniperSurface::JuniperSurface(const JuniperContext& context) :
-                                    mpInstance{context.mpInstance},
-                                    mppWindow{context.mppWindow},
-                                    mpSurface{context.mpSurface} {
+    mpInstance(context.mpInstance),
+    mppWindow(context.mppWindow),
+    mpSurface(context.mpSurface)
+{
     createSurface();
 
     jun::Logger::trace("JuniperSurface initialized");
