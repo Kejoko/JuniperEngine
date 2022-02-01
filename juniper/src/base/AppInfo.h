@@ -1,11 +1,19 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "Core.h"
 
 namespace jun {
     struct AppInfo;
 }
 
+/**
+ * @brief A struct containing all of the relevant information regarding the type of the
+ * JuniperEnginer (version, application name, etc ...)
+ * 
+ */
 struct jun::AppInfo {
     std::string mName;
     int mMajorVersion;

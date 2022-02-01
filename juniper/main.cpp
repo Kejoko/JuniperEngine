@@ -1,19 +1,19 @@
-#include "base/Core.h"
-#include "base/AppInfo.h"
-#include "base/JuniperBase.h"
-#include "logger/Logger.h"
-
 #include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
+#include "base/Core.h"
+#include "base/AppInfo.h"
+#include "base/JuniperBase.h"
+#include "logger/Logger.h"
+
 int main() {
     jun::Logger::init();
 
     jun::AppInfo appInfo;
-    appInfo.mName = "Juniper Engine";
+    appInfo.mName = "Our Lovely Game";
     appInfo.mMajorVersion = 0;
     appInfo.mMinorVersion = 0;
     appInfo.mPatchVersion = 1;

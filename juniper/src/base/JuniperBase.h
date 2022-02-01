@@ -23,22 +23,31 @@ namespace jun {
     class JuniperBase;
 }
 
+/**
+ * @brief The base object for the Juniper Engine. You construct one of these
+ * with the relevant application information. This is what the entire engine,
+ * and thusly the game, is built on.
+ */
 class jun::JuniperBase {
     public:
-        JuniperBase(const AppInfo& appInfo, int width, int height);
+        JuniperBase(const AppInfo& appInfo, int windowWidth, int windowHeight);
         ~JuniperBase();
 
         void run();
         void cleanup();
 
     private:
+        /**
+         * @todo Just store the appInfo object instead of copying all of the
+         * information to here
+         */
+        const std::string mName;
         const int mMajorVersion;
         const int mMinorVersion;
         const int mPatchVersion;
-        const std::string mName;
         
-        int mWidth;
-        int mHeight;
+        int mWindowWidth;
+        int mWindowHeight;
         
         JuniperContext mJContext;
         JuniperWindow mJWindow;

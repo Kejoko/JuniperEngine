@@ -1,5 +1,8 @@
 #include "JuniperBase.h"
 
+#include <memory>
+#include <string>
+
 #include "Core.h"
 #include "AppInfo.h"
 #include "JuniperContext.h"
@@ -9,26 +12,27 @@
 #include "JuniperVkInstance.h"
 #include "JuniperWindow.h"
 
-#include <memory>
-#include <string>
-
-
-jun::JuniperBase::JuniperBase(const AppInfo& info, int width, int height) :
-                              mMajorVersion{info.mMajorVersion},
-                              mMinorVersion{info.mMinorVersion},
-                              mPatchVersion{info.mPatchVersion},
-                              mName{info.mName},
-                              mWidth{width},
-                              mHeight{height},
-                              mJContext{},
-                              mJWindow{mWidth, mHeight, mName, mJContext},
-                              mJVkInstance{info, mJContext},
-                              mJSurface{mJContext},
-                              mJDevice{info, mJContext},
-                              mJSwapChain{mJContext},
-                              mJPipeline{mJContext},
-                              mJFrameBuffer{mJContext},
-                              mJCommandBuffer{mJContext} {
+jun::JuniperBase::JuniperBase(
+    const AppInfo& appInfo,
+    int windowWidth,
+    int windowHeight
+) :
+    mName(appInfo.mName),
+    mMajorVersion(appInfo.mMajorVersion),
+    mMinorVersion(appInfo.mMinorVersion),
+    mPatchVersion(appInfo.mPatchVersion),
+    mWindowWidth(windowWidth),
+    mWindowHeight(windowHeight),
+    mJContext(),
+    mJWindow(mWindowWidth, mWindowHeight, mName, mJContext),
+    mJVkInstance(appInfo, mJContext),
+    mJSurface(mJContext),
+    mJDevice(appInfo, mJContext),
+    mJSwapChain(mJContext),
+    mJPipeline(mJContext),
+    mJFrameBuffer(mJContext),
+    mJCommandBuffer(mJContext)
+{
     jun::Logger::trace("JuniperBase initialized");
 }
 
